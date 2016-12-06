@@ -1,0 +1,27 @@
+{
+  "name": "limen/redmodel",
+  "description": "CURD model for Redis in laravel style.",
+  "type": "library",
+  "keywords": [
+    "redis",
+    "model",
+    "laravel"
+  ],
+  "homepage": "https://github.com/limen/redmodel",
+  "authors": [
+    {
+      "name": "Li Mengxiang",
+      "mail": "limengxiang876@gmail.com",
+      "homepage": "http://limen.github.io"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "predis/predis": "1.1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Limen\\RedModel\\": "src/"
+    }
+  }
+}
