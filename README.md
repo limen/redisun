@@ -8,10 +8,7 @@
 
 ## Installation
 
-Recommend to install via composer. See [php composer](https://getcomposer.org/ "").
-```
-composer require "limen/redmodel:dev-master"
-```
+This library could be found on [Packagist](https://packagist.org/packages/limen/redmodel "") for an easier management of projects dependencies using [Composer](https://getcomposer.org/ "").
 
 ## Usage
 
