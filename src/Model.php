@@ -87,6 +87,22 @@ abstract class Model
     }
 
     /**
+     * @return QueryBuilder
+     */
+    public function getQueryBuilder()
+    {
+        return $this->queryBuilder;
+    }
+
+    /**
+     * @return string
+     */
+    public function geyPrimaryKeyName()
+    {
+        return $this->primaryKeyName;
+    }
+
+    /**
      * Query like database
      * The {$bindingKey} part in the key representation would be replace by $value
      * @param $bindingKey string
