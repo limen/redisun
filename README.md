@@ -17,7 +17,7 @@ use Limen\RedModel\Examples\HashModel;
 
 
 // constructing parameters are passed transparently to Predis client's constructor 
-$hasModel = new HashModel([
+$hashModel = new HashModel([
     'scheme' => 'tcp',
     'host' => '127.0.0.1',
     'port' => 6379,
@@ -39,50 +39,50 @@ $cat = [
 $tested = [];
 
 // insert
-$hasModel->insert(['id' => 1], $maria);
-$hasModel->insert(['id' => 2], $cat);
+$hashModel->insert(['id' => 1], $maria);
+$hashModel->insert(['id' => 2], $cat);
 // find by primary key
-$user = $hasModel->find(1);
+$user = $hashModel->find(1);
 
 if ($user === $maria) {
     $tested[] = 'Find OK';
 }
 
 // find by query
-$users = $hasModel->where('id', 1)->get();
+$users = $hashModel->where('id', 1)->get();
 if ($users === [$maria]) {
     $tested[] = 'Where then get OK';
 }
 
-$user = $hasModel->where('id', 1)->first();
+$user = $hashModel->where('id', 1)->first();
 if ($user === $maria) {
     $tested[] = 'Where then first OK';
 }
 
-$users = $hasModel->whereIn('id', [1,2])->get();
+$users = $hashModel->whereIn('id', [1,2])->get();
 if ($users === [$maria, $cat]) {
     $tested[] = 'Where in then get OK';
 }
 
 // find batch by primary keys
-$users = $hasModel->findBatch([1,2]);
+$users = $hashModel->findBatch([1,2]);
 if ($users === [$maria, $cat]) {
     $tested[] = 'find batch OK';
 }
 
 // update by query
-$hasModel->where('id', 1)->update([
+$hashModel->where('id', 1)->update([
     'age' => '23',
 ]);
-$user = $hasModel->find(1);
+$user = $hashModel->find(1);
 if ($user['age'] === '23') {
     $tested[] = 'Update OK';
 }
 
 // remove item
-$hasModel->destroy(1);
+$hashModel->destroy(1);
 
-$user = $hasModel->find(1);
+$user = $hashModel->find(1);
 if (!$user) {
     $tested[] = 'Destroy OK';
 }
