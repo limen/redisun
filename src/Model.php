@@ -71,8 +71,18 @@ abstract class Model
 
     public function __construct($parameters = null, $options = null)
     {
+        $this->initRedisClient($parameters, $options);
+        $this->initQueryBuilder($this->key, $this->bindingWrapper);
+    }
+
+    protected function initRedisClient($parameters, $options)
+    {
         $this->redClient = new RedisClient($parameters, $options);
-        $this->queryBuilder = new QueryBuilder($this->key, $this->bindingWrapper);
+    }
+
+    protected function initQueryBuilder($key, $bindingWrapper)
+    {
+        $this->queryBuilder = new QueryBuilder($key, $bindingWrapper);
     }
 
     /**
