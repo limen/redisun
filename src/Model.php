@@ -107,7 +107,7 @@ abstract class Model
     /**
      * @return string
      */
-    public function geyPrimaryKeyName()
+    public function getPrimaryKeyName()
     {
         return $this->primaryKeyName;
     }
