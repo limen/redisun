@@ -1,5 +1,8 @@
 # CURD model for redis in laravel style
 
+[![Build Status](https://travis-ci.org/limen/redmodel.svg?branch=master)](https://travis-ci.org/limen/redmodel)
+[![Packagist](https://img.shields.io/packagist/l/limen/redmodel.svg?maxAge=2592000)](https://packagist.org/packages/limen/redmodel)
+
 ## Features
 
 + support operations: create, insert, find, destroy and so on 
@@ -43,7 +46,7 @@ $cat = [
 $hashModel->insert(['id' => 1], $maria);
 $hashModel->insert(['id' => 2], $cat);
 // find by primary key
-$user = $hashModel->find(1);
+$user = $hashModel->find(1);                // return $maria
 
 // find by query
 $hashModel->where('id', 1)->get();          // return [$maria]
@@ -57,7 +60,12 @@ $users = $hashModel->findBatch([1,2]);      // return [$maria, $cat]
 $hashModel->where('id', 1)->update([
     'age' => '23',
 ]);
-$hashModel->find(1);
+$hashModel->find(1);        // return [
+                            //    'name' => 'Maria',
+                            //    'age' => '23',
+                            //    'nation' => 'USA',
+                            //    'state' => 'New York',
+                            // ];
 
 // remove item
 $hashModel->destroy(1);
@@ -100,10 +108,12 @@ Taking the job to build query keys for model.
 
 ```php
 // model's key representation user:{id}:{name}
-$queryBuilder->whereIn('id', [1,2])->where('name', 'maria');
+$queryBuilder->whereIn('id', [1,2])->whereIn('name', ['maria', 'cat']);
 // built keys
 // user:1:maria
+// user:1:cat
 // user:2:maria
+// user:2:cat
 ```
     
 The built query keys which contain unbound fields would be ignored. For example
