@@ -1,8 +1,11 @@
 <?php
-/**
- * @author LI Mengxiang
- * @email limengxiang876@gmail.com
- * @since 2016/12/6 15:54
+/*
+ * This file is part of the Redmodel package.
+ *
+ * (c) LI Mengxiang <limengxiang876@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Limen\RedModel;
@@ -12,7 +15,10 @@ use Predis\Client as RedisClient;
 /**
  * CRUD model for redis
  * Class Model
+ *
  * @package Limen\RedModel
+ *
+ * @author LI Mengxiang <limengxiang876@gmail.com>
  */
 abstract class Model
 {

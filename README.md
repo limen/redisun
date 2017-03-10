@@ -19,7 +19,6 @@ composer require "limen/redmodel"
 ```php
 use Limen\RedModel\Examples\HashModel;
 
-
 // constructing parameters are passed transparently to Predis client's constructor 
 $hashModel = new HashModel([
     'scheme' => 'tcp',
@@ -40,58 +39,29 @@ $cat = [
     'city' => 'London',
 ];
 
-$tested = [];
-
 // insert
 $hashModel->insert(['id' => 1], $maria);
 $hashModel->insert(['id' => 2], $cat);
 // find by primary key
 $user = $hashModel->find(1);
 
-if ($user === $maria) {
-    $tested[] = 'Find OK';
-}
-
 // find by query
-$users = $hashModel->where('id', 1)->get();
-if ($users === [$maria]) {
-    $tested[] = 'Where then get OK';
-}
-
-$user = $hashModel->where('id', 1)->first();
-if ($user === $maria) {
-    $tested[] = 'Where then first OK';
-}
-
-$users = $hashModel->whereIn('id', [1,2])->get();
-if ($users === [$maria, $cat]) {
-    $tested[] = 'Where in then get OK';
-}
+$hashModel->where('id', 1)->get();          // return [$maria]
+$hashModel->where('id', 1)->first();        // return $maria
+$hashModel->whereIn('id', [1,2])->get();    // return [$maria, $cat]
 
 // find batch by primary keys
-$users = $hashModel->findBatch([1,2]);
-if ($users === [$maria, $cat]) {
-    $tested[] = 'find batch OK';
-}
+$users = $hashModel->findBatch([1,2]);      // return [$maria, $cat]
 
 // update by query
 $hashModel->where('id', 1)->update([
     'age' => '23',
 ]);
-$user = $hashModel->find(1);
-if ($user['age'] === '23') {
-    $tested[] = 'Update OK';
-}
+$hashModel->find(1);
 
 // remove item
 $hashModel->destroy(1);
-
-$user = $hashModel->find(1);
-if (!$user) {
-    $tested[] = 'Destroy OK';
-}
-
-var_dump($tested);
+$user = $hashModel->find(1);                // return []
 ```
 
 ## Operation notices
@@ -142,5 +112,22 @@ The built query keys which contain unbound fields would be ignored. For example
 user:1:{name}
 ```
 
+## Development
+
+### Test
+
+```bash
+$ phpunit --bootstrap tests/bootstrap.php tests/
+PHPUnit 5.7.15 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 5.6.24
+Configuration: /usr/local/app/deployments/lmx/mobile-api-new/vendor/limen/redmodel/phpunit.xml.dist
+
+.....                                                               5 / 5 (100%)
+
+Time: 162 ms, Memory: 13.25MB
+
+OK (5 tests, 20 assertions)
+```
 
 

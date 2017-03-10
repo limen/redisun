@@ -11,13 +11,17 @@
   "authors": [
     {
       "name": "LI Mengxiang",
-      "mail": "limengxiang876@gmail.com",
+      "email": "limengxiang876@gmail.com",
       "homepage": "https://github.com/limen"
     }
   ],
   "license": "MIT",
   "require": {
+    "php": ">=5.4",
     "predis/predis": "1.1.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.8"
   },
   "autoload": {
     "psr-4": {

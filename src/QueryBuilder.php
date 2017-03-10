@@ -1,8 +1,11 @@
 <?php
-/**
- * @author LI Mengxiang
- * @email limengxiang876@gmail.com
- * @since 2016/12/6 16:12
+/*
+ * This file is part of the Redmodel package.
+ *
+ * (c) LI Mengxiang <limengxiang876@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Limen\RedModel;
@@ -11,6 +14,8 @@ namespace Limen\RedModel;
  * Build redis keys for model
  * Class QueryBuilder
  * @package Limen\RedModel
+ *
+ * @author LI Mengxiang <limengxiang876@gmail.com>
  */
 class QueryBuilder
 {
@@ -78,9 +83,11 @@ class QueryBuilder
                 $this->builtKeys[] = $this->bindValue($this->queryKey, $bindingKey, $value);
             }
         } else {
-            foreach ($values as $value) {
-                foreach ($this->builtKeys as &$builtKey) {
-                    $builtKey = $this->bindValue($builtKey, $bindingKey, $value);
+            $builtKeys = $this->builtKeys;
+            $this->builtKeys = [];
+            foreach ($builtKeys as $key) {
+                foreach ($values as $value) {
+                    $this->builtKeys[] = $this->bindValue($key, $bindingKey, $value);
                 }
             }
         }
@@ -88,6 +95,14 @@ class QueryBuilder
         $this->builtKeys = array_unique(array_values($this->builtKeys));
 
         return $this;
+    }
+
+    /**
+     * Flush keys have been built
+     */
+    public function flushBuiltKeys()
+    {
+        $this->builtKeys = [];
     }
 
     /**
@@ -103,14 +118,6 @@ class QueryBuilder
         });
 
         return $builtKeys;
-    }
-
-    /**
-     * Flush keys have been built
-     */
-    protected function flushBuiltKeys()
-    {
-        $this->builtKeys = [];
     }
 
     /**
