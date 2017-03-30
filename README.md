@@ -221,6 +221,14 @@ Similar to where
 $model->whereIn('id', [1,2,3]);
 ```
 
+### first
+
+Get first exist item from query keys. Return null when all query keys not exist.
+
+```
+$model->whereIn('id', [1,2,3])->first();    // return string|array|null
+```
+
 ### update
 
 The key would not be created if not exist.

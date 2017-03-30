@@ -83,18 +83,20 @@ class ModelTest extends TestCase
         $this->assertEquals($model->find(1), $a);
 
         $values = $model->findBatch([1,2]);
-        $this->assertTrue(in_array($a, $values));
-        $this->assertTrue(in_array($b, $values));
+        $this->assertEquals(2, count($values));
+        $this->assertEquals($a, $values['redmodel:1:hash']);
+        $this->assertEquals($b, $values['redmodel:2:hash']);
 
         $values = $model->all();
         $this->assertTrue(in_array($a, $values));
         $this->assertTrue(in_array($b, $values));
 
         $data = $model->newQuery()->whereIn('id', [1,2])->orderBy('id', 'desc')->get();
-        $this->assertEquals([$b, $a], $data);
+        $this->assertEquals([$b, $a], array_values($data));
 
         $data = $model->newQuery()->whereIn('id', [1,2])->orderBy('id', 'desc')->take(1)->get();
-        $this->assertEquals([$b], $data);
+        $this->assertEquals(1, count($data));
+        $this->assertEquals($b, $data['redmodel:2:hash']);
 
         $model->newQuery()->where('id', 1)->update($b);
         $value = $model->newQuery()->where('id', 1)->first();
@@ -293,6 +295,7 @@ class ModelTest extends TestCase
 
         sleep($ttl);
         $this->assertEquals([], $model->newQuery()->where('id',1)->where('name','maria')->get());
+        $this->assertNull($model->newQuery()->where('id',1)->where('name','maria')->first());
 
         // HashModel
         $model = new HashModel();
@@ -317,6 +320,7 @@ class ModelTest extends TestCase
 
         sleep($ttl);
         $this->assertEquals([], $model->newQuery()->where('id',1)->get());
+        $this->assertEquals([], $model->find(1));
 
         // ZsetModel
         $model = new ZsetModel();

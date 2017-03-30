@@ -965,13 +965,13 @@ abstract class Model
     {
         $assoc = [];
 
-        foreach ($hashes as $hash) {
+        foreach ($hashes as $k => $hash) {
             $item = [];
             for ($i = 0; $i < count($hash); $i = $i + 2) {
                 $item[$hash[$i]] = $hash[$i + 1];
             }
             if ($item) {
-                $assoc[] = $item;
+                $assoc[$k] = $item;
             }
         }
 
