@@ -9,6 +9,7 @@
  */
 
 namespace Limen\RedModel;
+use Limen\Fileflake\Exceptions\Exception;
 
 /**
  * Build redis keys for model
@@ -19,46 +20,53 @@ namespace Limen\RedModel;
  */
 class QueryBuilder
 {
-    protected $queryKey;
+    protected $key;
 
-    protected $bindingWrapper;
+    protected $queryKeys = [];
 
-    protected $builtKeys = [];
+    protected $whereIns = [];
 
-    public function __construct($key, $wrapper)
+    protected $whereBetweens = [];
+
+    protected $fieldNeedles = [];
+
+    public function __construct($key)
     {
-        $this->queryKey = $key;
-        $this->bindingWrapper = $wrapper;
+        $this->key = $key;
     }
 
     /**
-     * @return array
+     * @param $field
+     * @param $needle
+     * @return $this
      */
-    public function getRawKeys()
+    public function setFieldNeedle($field, $needle)
     {
-        return $this->builtKeys;
+        $this->fieldNeedles[$field] = $needle;
+
+        return $this;
     }
 
     /**
      * Get valid keys have been built
      * @return array
      */
-    public function getBuiltKeys()
+    public function getQueryKeys()
     {
-        $keys = $this->getValidQueryKeys();
-        $this->flushBuiltKeys();
-        return $keys;
+        $this->getValidQueryKeys();
+
+        return $this->queryKeys;
     }
 
     /**
      * Get first key
      * @return string|null
      */
-    public function firstBuiltKey()
+    public function firstQueryKey()
     {
-        $keys = $this->getValidQueryKeys();
-        $this->flushBuiltKeys();
-        return $keys ? $keys[0] : null;
+        $this->getValidQueryKeys();
+
+        return $this->queryKeys ? $this->queryKeys[0] : null;
     }
 
     /**
@@ -66,81 +74,104 @@ class QueryBuilder
      * @param string $value
      * @return QueryBuilder
      */
-    public function where($bindingKey, $value)
+    public function whereEqual($bindingKey, $value)
     {
         return $this->whereIn($bindingKey, [$value]);
     }
 
     /**
-     * @param $bindingKey string
+     * @param $field string
      * @param string[] $values
      * @return $this
      */
-    public function whereIn($bindingKey, array $values)
+    public function whereIn($field, array $values)
     {
-        if ($this->builtKeys === []) {
-            foreach ($values as $value) {
-                $this->builtKeys[] = $this->bindValue($this->queryKey, $bindingKey, $value);
-            }
-        } else {
-            $builtKeys = $this->builtKeys;
-            $this->builtKeys = [];
-            foreach ($builtKeys as $key) {
-                foreach ($values as $value) {
-                    $this->builtKeys[] = $this->bindValue($key, $bindingKey, $value);
-                }
-            }
-        }
-
-        $this->builtKeys = array_unique(array_values($this->builtKeys));
+        $this->whereIns[$field] = isset($this->whereIns[$field]) ?
+            array_merge($this->whereIns[$field], $values) : $values;
 
         return $this;
     }
 
     /**
-     * Flush keys have been built
+     * @param string $key
+     * @param array $range [min,max]
+     * @return $this
+     * @throws Exception
      */
-    public function flushBuiltKeys()
+    public function whereBetween($key, $range)
     {
-        $this->builtKeys = [];
+        if (!is_int($range[0]) || !is_int($range[1])) {
+            throw new Exception('whereBetween parameters must be integer');
+        }
+
+        if ($range[1] <  $range[0]) {
+            throw new Exception('whereBetween up bound must be greater than or equal to low bound');
+        }
+
+        $this->whereBetweens[$key] = $range;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function refresh()
+    {
+        $this->queryKeys = [];
+        $this->whereIns = [];
+        $this->whereBetweens = [];
+
+        return $this;
     }
 
     /**
      * Get valid query keys
-     * @return array
+     * @return $this
      */
     protected function getValidQueryKeys()
     {
-        $invalidPattern = '/' . str_replace('?', '\S+', $this->bindingWrapper) . '/';
+        $whereIns = [];
 
-        $builtKeys = array_filter($this->builtKeys, function ($key) use ($invalidPattern) {
-            return !empty($key) && !preg_match($invalidPattern, $key);
-        });
+        foreach ($this->whereBetweens as $field => $range) {
+            $whereIns[$field] = range($range[0], $range[1]);
+        }
 
-        return $builtKeys;
+        foreach ($whereIns as $key => $value) {
+            $this->whereIn($key, $value);
+        }
+
+        $this->queryKeys = [];
+
+        foreach ($this->whereIns as $field => $range) {
+            if ($this->queryKeys === []) {
+                foreach ($range as $value) {
+                    $this->queryKeys[] = $this->bindValue($this->key, $field, $value);
+                }
+            } else {
+                $queryKeys = $this->queryKeys;
+                $this->queryKeys = [];
+                foreach ($queryKeys as $item) {
+                    foreach ($range as $value) {
+                        $this->queryKeys[] = $this->bindValue($item, $field, $value);
+                    }
+                }
+            }
+        }
+
+        $this->queryKeys = array_unique(array_values($this->queryKeys));
+
+        return $this;
     }
 
     /**
      * @param string $queryKey
-     * @param string $bindingKey
+     * @param string $field
      * @param string $value
      * @return string
      */
-    protected function bindValue($queryKey, $bindingKey, $value)
+    protected function bindValue($queryKey, $field, $value)
     {
-        $bindingNeedle = $this->getBindingNeedle($bindingKey);
-
-        return str_replace($bindingNeedle, $value, $queryKey);
+        return str_replace($this->fieldNeedles[$field], $value, $queryKey);
     }
-
-    /**
-     * Get binding needle to replace
-     * @param $bindingKey
-     * @return mixed
-     */
-    protected function getBindingNeedle($bindingKey)
-    {
-        return str_replace('?', $bindingKey, $this->bindingWrapper);
-    }
-
 }

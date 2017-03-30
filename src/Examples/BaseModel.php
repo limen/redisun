@@ -30,6 +30,10 @@ class BaseModel extends Model
             $parameters['port'] = 6379;
         }
 
+        if (!isset($parameters['database'])) {
+            $parameters['database'] = 1;
+        }
+
         parent::initRedisClient($parameters, $options);
     }
 }
