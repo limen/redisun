@@ -4,8 +4,9 @@
   "type": "library",
   "keywords": [
     "redis",
-    "model",
-    "laravel"
+    "sql",
+    "orm",
+    "model"
   ],
   "homepage": "https://github.com/limen/redmodel",
   "authors": [

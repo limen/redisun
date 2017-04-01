@@ -13,6 +13,7 @@ namespace Limen\RedModel;
 use Exception;
 use Limen\RedModel\Commands\Command;
 use Limen\RedModel\Commands\Factory;
+use Limen\RedModel\Commands\FactoryInterface;
 use Predis\Client as RedisClient;
 
 /**
@@ -67,6 +68,11 @@ abstract class Model
     protected $queryBuilder;
 
     /**
+     * @var FactoryInterface
+     */
+    protected $commandFactory;
+
+    /**
      * @var array
      */
     protected $orderBys = [];
@@ -109,6 +115,7 @@ abstract class Model
     {
         $this->initRedisClient($parameters, $options);
         $this->newQuery();
+        $this->setCommandFactory();
     }
 
     /**
@@ -127,19 +134,19 @@ abstract class Model
     }
 
     /**
-     * Compare items to sort
-     * @param $a
-     * @param $b
-     * @return int 1.a>b 0.a=b -1.a<b
+     * @param $factory FactoryInterface
      */
-    protected function compare($a, $b)
+    public function setCommandFactory($factory = null)
     {
-        //
+        $this->commandFactory = $factory ?: new Factory();
     }
 
-    protected function revcompare($a, $b)
+    /**
+     * @return FactoryInterface
+     */
+    public function getCommandFactory()
     {
-        return -$this->compare($a, $b);
+        return $this->commandFactory;
     }
 
     /**
@@ -327,7 +334,7 @@ abstract class Model
      */
     public function getKeys()
     {
-       return $this->prepareKeys();
+        return $this->prepareKeys();
     }
 
     /**
@@ -356,7 +363,7 @@ abstract class Model
     {
         $items = $this->take(1)->get();
 
-        return $items ? array_shift($items): null;
+        return $items ? array_shift($items) : null;
     }
 
     /**
@@ -495,6 +502,12 @@ abstract class Model
      */
     public function findBatch(array $ids)
     {
+        $primaryKeys = [];
+
+        foreach ($ids as $id) {
+            $primaryKeys[$id] = $this->getPrimaryKey($id);
+        }
+
         $this->newQuery()->whereIn($this->getPrimaryFieldName(), $ids);
 
         $queryKeys = $this->prepareCompleteKeys();
@@ -503,7 +516,19 @@ abstract class Model
             return [];
         }
 
-        return $this->getProxy($queryKeys);
+        $data = $this->getProxy($queryKeys);
+
+        $list = [];
+
+        foreach ($data as $k => $v) {
+            $id = array_search($k, $primaryKeys);
+
+            if ($id) {
+                $list[$id] = $v;
+            }
+        }
+
+        return $list;
     }
 
     /**
@@ -526,9 +551,10 @@ abstract class Model
     /**
      * @param array $ids primary keys
      * @param $value
+     * @param int|null $ttl
      * @return mixed
      */
-    public function updateBatch(array $ids, $value)
+    public function updateBatch(array $ids, $value, $ttl = null)
     {
         $this->newQuery()->whereIn($this->getPrimaryFieldName(), $ids);
 
@@ -538,7 +564,7 @@ abstract class Model
             return false;
         }
 
-        return $this->updateBatchProxy($queryKeys, $value);
+        return $this->updateBatchProxy($queryKeys, $value, $ttl);
     }
 
     /**
@@ -560,6 +586,22 @@ abstract class Model
 
         array_unshift($parameters, $keys[0]);
         return call_user_func_array([$this->redClient, $method], $parameters);
+    }
+
+    /**
+     * Compare items to sort
+     * @param $a
+     * @param $b
+     * @return int 1.a>b 0.a=b -1.a<b
+     */
+    protected function compare($a, $b)
+    {
+        //
+    }
+
+    protected function revcompare($a, $b)
+    {
+        return -$this->compare($a, $b);
     }
 
     protected function initRedisClient($parameters, $options)
@@ -608,7 +650,7 @@ abstract class Model
         if (!$keys) {
             return [];
         }
-        
+
         return array_filter($keys, [$this, 'isCompleteKey']);
     }
 
@@ -637,7 +679,7 @@ abstract class Model
 
         $value = $this->castValueForUpdate($value);
 
-        $command = Factory::getCommand($method, [$key], $value);
+        $command = $this->commandFactory->getCommand($method, [$key], $value);
 
         if ($ttl) {
             $command->setTtl($ttl);
@@ -664,7 +706,7 @@ abstract class Model
 
         $value = $this->castValueForUpdate($value);
 
-        $command = Factory::getCommand($method, $keys, $value);
+        $command = $this->commandFactory->getCommand($method, $keys, $value);
 
         if ($ttl) {
             $command->setTtl($ttl);
@@ -688,7 +730,7 @@ abstract class Model
         if ($queryKeys) {
             list($method, $params) = $this->getFindMethodAndParameters();
 
-            $command = Factory::getCommand($method, $queryKeys);
+            $command = $this->commandFactory->getCommand($method, $queryKeys);
 
             $data = $this->executeCommand($command);
         }
@@ -822,7 +864,7 @@ abstract class Model
         $exist = [];
 
         if ($keys) {
-            $command = Factory::getCommand('keys', $keys);
+            $command = $this->commandFactory->getCommand('keys', $keys);
 
             $exist = $this->executeCommand($command);
 
@@ -916,6 +958,24 @@ abstract class Model
         }
 
         return $flag;
+    }
+
+    /**
+     * @param string $field
+     * @return string
+     */
+    protected function getFieldNeedle($field)
+    {
+        return $this->fieldWrapper[0] . $field . $this->fieldWrapper[1];
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    protected function getPrimaryKey($id)
+    {
+        return str_replace($this->getFieldNeedle($this->getPrimaryFieldName()), $id, $this->key);
     }
 
     private function checkSortable()

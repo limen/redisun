@@ -7,11 +7,19 @@ class SetCommand extends Command
     {
         $luaSetTtl = $this->luaSetTtl($this->getTtl());
 
+        $setTtl = $luaSetTtl ? '1' : '0';
+
         $script = <<<LUA
     local values = {}; 
     for i,v in ipairs(KEYS) do
+        local ttl = redis.pcall('ttl', v);
+        local setTtl = '$setTtl';
         values[#values+1] = redis.pcall('set',v,ARGV[1]);
-        $luaSetTtl
+        if setTtl == '1' then
+            $luaSetTtl
+        elseif ttl >= 0 then
+            redis.pcall('expire', v, ttl);
+        end
     end 
     return {KEYS,values};
 LUA;

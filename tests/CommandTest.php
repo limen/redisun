@@ -11,7 +11,9 @@ class CommandTest extends TestCase
             'list1','list2',1,2,3,4,
         ];
 
-        $command = Factory::getCommand('rpush', [$arguments[0], $arguments[1]], array_slice($arguments, 2));
+        $factory = new Factory();
+
+        $command = $factory->getCommand('rpush', [$arguments[0], $arguments[1]], array_slice($arguments, 2));
 
         $this->assertEquals(2, $command->getKeysCount());
 

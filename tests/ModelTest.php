@@ -84,8 +84,8 @@ class ModelTest extends TestCase
 
         $values = $model->findBatch([1,2]);
         $this->assertEquals(2, count($values));
-        $this->assertEquals($a, $values['redmodel:1:hash']);
-        $this->assertEquals($b, $values['redmodel:2:hash']);
+        $this->assertEquals($a, $values[1]);
+        $this->assertEquals($b, $values[2]);
 
         $values = $model->all();
         $this->assertTrue(in_array($a, $values));
@@ -98,21 +98,20 @@ class ModelTest extends TestCase
         $this->assertEquals(1, count($data));
         $this->assertEquals($b, $data['redmodel:2:hash']);
 
-        $model->newQuery()->where('id', 1)->update($b);
+        $updated = $a;
+        $model->newQuery()->where('id', 1)->update([
+            'age' => 24
+        ]);
+        $updated['age'] = '24';
         $value = $model->newQuery()->where('id', 1)->first();
-        $this->assertEquals($b, $value);
-
-        $value = $model->find(1);
-        $this->assertEquals($value, $b);
+        $this->assertEquals($updated, $value);
 
         $model->destroy(1);
         $this->assertEquals($model->find(1), []);
 
         $model->updateBatch([1,2], $a);
         $this->assertEquals($model->find(1), $a);
-
-        $value = $model->find(2);
-        $this->assertEquals($value, $a);
+        $this->assertEquals($model->find(2), $a);
 
         $model->destroyBatch([1,2]);
         $this->assertEquals($model->find(2), []);
@@ -289,9 +288,13 @@ class ModelTest extends TestCase
         $model->insert([
             'id' => 1,
             'name' => 'maria',
-        ], 10, $ttl);
+        ], 'maria', $ttl);
 
         $this->assertEquals($ttl, $model->newQuery()->where('id',1)->where('name','maria')->ttl());
+
+        $model->newQuery()->where('id',1)->where('name','maria')->update('mary');
+        $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->where('name','maria')->ttl());
+        $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->where('name','maria')->ttl());
 
         sleep($ttl);
         $this->assertEquals([], $model->newQuery()->where('id',1)->where('name','maria')->get());
@@ -303,10 +306,26 @@ class ModelTest extends TestCase
             'name' => 'maria',
             'age' => 25,
         ], $ttl);
+        $model->create(2, [
+            'name' => 'maria',
+            'age' => 25,
+        ], $ttl + 1);
 
-        $this->assertequals($ttl, $model->newQuery()->where('id',1)->ttl());
+        $this->assertEquals($ttl, $model->newQuery()->where('id',1)->ttl());
+        $model->where('id', 1)->update([
+            'age' => 26,
+        ]);
+//        $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->ttl());
+//        $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->ttl());
+        $this->assertEquals($ttl, $model->newQuery()->where('id',1)->ttl());
 
-        sleep($ttl);
+        $model->updateBatch([1,2], [
+            'age' => 27
+        ]);
+        $this->assertEquals($ttl, $model->newQuery()->where('id',1)->ttl());
+        $this->assertEquals($ttl + 1, $model->newQuery()->where('id',2)->ttl());
+
+        sleep($ttl + 1);
         $this->assertEquals([], $model->newQuery()->where('id',1)->get());
 
         // SetModel
@@ -316,7 +335,14 @@ class ModelTest extends TestCase
             'maria'
         ], $ttl);
 
-        $this->assertequals($ttl, $model->newQuery()->where('id',1)->ttl());
+        $this->assertEquals($ttl, $model->newQuery()->where('id',1)->ttl());
+        $model->where('id', 1)->update([
+            'martin',
+            'maria',
+            'cathrine',
+        ]);
+        $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->ttl());
+        $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->ttl());
 
         sleep($ttl);
         $this->assertEquals([], $model->newQuery()->where('id',1)->get());
@@ -330,6 +356,13 @@ class ModelTest extends TestCase
         ], $ttl);
 
         $this->assertequals($ttl, $model->newQuery()->where('id',1)->ttl());
+        $model->where('id', 1)->update([
+            'martin' => 2,
+            'maria' => 3,
+            'cathrine' => 1,
+        ]);
+        $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->ttl());
+        $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->ttl());
 
         sleep($ttl);
         $this->assertEquals([], $model->newQuery()->where('id',1)->get());
@@ -342,6 +375,13 @@ class ModelTest extends TestCase
         ], $ttl);
 
         $this->assertequals($ttl, $model->newQuery()->where('id',1)->ttl());
+        $model->where('id', 1)->update([
+            'martin',
+            'maria',
+            'cathrine',
+        ]);
+        $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->ttl());
+        $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->ttl());
 
         sleep($ttl);
         $this->assertEquals([], $model->newQuery()->where('id',1)->get());

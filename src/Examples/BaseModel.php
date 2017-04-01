@@ -31,7 +31,7 @@ class BaseModel extends Model
         }
 
         if (!isset($parameters['database'])) {
-            $parameters['database'] = 1;
+            $parameters['database'] = 4;
         }
 
         parent::initRedisClient($parameters, $options);

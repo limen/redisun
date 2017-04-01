@@ -10,16 +10,16 @@
 
 namespace Limen\RedModel\Commands;
 
-class Factory
+class Factory implements FactoryInterface
 {
     /**
      * @param string $command redis command in lower case
-     * @param array $keys
-     * @param array $args
+     * @param array $keys KEYS for redis "eval" command
+     * @param array $args ARGV for redis "eval" command
      * @return Command
      * @throws \Exception
      */
-    public static function getCommand($command, $keys = [], $args = [])
+    public function getCommand($command, $keys = [], $args = [])
     {
         $instance = null;
 

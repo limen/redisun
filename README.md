@@ -178,19 +178,25 @@ $model->find(1);
 
 ### findBatch
 
-Similar to find
+Similar to find. The returned data set are indexed by ids.
 ```
 $model->findBatch([1,2,3]);
+// [
+//     1 => <item1>,
+//     2 => <item2>,
+//     3 => <item3>,
+// ]
 ```
 
 ### updateBatch
 
 Similar to findBatch.
+
+The key would not be created if not exist. The key's ttl would not be modified if the ttl parameter not set.
+
 ```
 $model->updateBatch([1,2,3], $value);
 ```
-
-The key wouldn't be created if not exist.
 
 ### all
 
@@ -231,7 +237,7 @@ $model->whereIn('id', [1,2,3])->first();    // return string|array|null
 
 ### update
 
-The key would not be created if not exist.
+The key would not be created if not exist. The key's ttl would not be modified if the ttl parameter not set.
 
 ```
 $model->where('id',1)->update($value);
