@@ -9,7 +9,7 @@
  */
 
 namespace Limen\RedModel;
-use Limen\Fileflake\Exceptions\Exception;
+use \Exception;
 
 /**
  * Build redis keys for model
@@ -20,24 +20,47 @@ use Limen\Fileflake\Exceptions\Exception;
  */
 class QueryBuilder
 {
+    /**
+     * Key representation
+     * @var string
+     */
     protected $key;
 
+    /**
+     * Built keys
+     * @var array
+     */
     protected $queryKeys = [];
 
+    /**
+     * Where in pairs
+     * @var array
+     */
     protected $whereIns = [];
 
+    /**
+     * Where between pairs
+     * @var array
+     */
     protected $whereBetweens = [];
 
+    /**
+     * @var array
+     */
     protected $fieldNeedles = [];
 
+    /**
+     * QueryBuilder constructor.
+     * @param string $key       e.g. user:{id}:name
+     */
     public function __construct($key)
     {
         $this->key = $key;
     }
 
     /**
-     * @param $field
-     * @param $needle
+     * @param string $field     e.g. id
+     * @param string $needle    e.g. {id}
      * @return $this
      */
     public function setFieldNeedle($field, $needle)
@@ -114,6 +137,8 @@ class QueryBuilder
     }
 
     /**
+     * Refresh query builder
+     *
      * @return $this
      */
     public function refresh()

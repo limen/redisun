@@ -596,14 +596,25 @@ abstract class Model
      */
     protected function compare($a, $b)
     {
-        //
+        return $a > $b ? 1 : ($a == $b ? 0 : -1);
     }
 
+    /**
+     * @param $a
+     * @param $b
+     * @return int
+     */
     protected function revcompare($a, $b)
     {
         return -$this->compare($a, $b);
     }
 
+    /**
+     * Initialize redis client
+     *
+     * @param $parameters
+     * @param $options
+     */
     protected function initRedisClient($parameters, $options)
     {
         $this->redClient = new RedisClient($parameters, $options);
@@ -760,6 +771,11 @@ abstract class Model
         return $this;
     }
 
+    /**
+     * Get update method according to redis data type
+     *
+     * @return string
+     */
     protected function getUpdateMethod()
     {
         $method = '';
@@ -787,6 +803,8 @@ abstract class Model
     }
 
     /**
+     * Cast value data type for update according to redis data type
+     *
      * @param $value
      * @return array
      */
@@ -857,6 +875,12 @@ abstract class Model
         return [$method, $parameters];
     }
 
+    /**
+     * Get existed keys in redis database
+     *
+     * @param $queryKeys
+     * @return array|mixed
+     */
     protected function getExistKeys($queryKeys)
     {
         $keys = $this->markUnboundFields($queryKeys);
@@ -891,6 +915,12 @@ abstract class Model
         return $data;
     }
 
+    /**
+     * Check a key whether has unbound field
+     *
+     * @param $key
+     * @return bool
+     */
     protected function hasUnboundField($key)
     {
         $parts = $this->explodeKey($key);
@@ -917,6 +947,12 @@ abstract class Model
         return false;
     }
 
+    /**
+     * Mark unbound field with *
+     *
+     * @param $keys
+     * @return array
+     */
     protected function markUnboundFields($keys)
     {
         $marked = [];
@@ -936,6 +972,13 @@ abstract class Model
         return $marked;
     }
 
+    /**
+     * Compare two keys by key field(s)
+     *
+     * @param $key1
+     * @param $key2
+     * @return int
+     */
     protected function sortByFields($key1, $key2)
     {
         $key1Parts = $this->explodeKey($key1);
@@ -978,6 +1021,9 @@ abstract class Model
         return str_replace($this->getFieldNeedle($this->getPrimaryFieldName()), $id, $this->key);
     }
 
+    /**
+     * @throws Exception
+     */
     private function checkSortable()
     {
         if (!$this->sortable) {
@@ -985,6 +1031,9 @@ abstract class Model
         }
     }
 
+    /**
+     * Set order by field and order
+     */
     private function setOrderByFieldIndices()
     {
         $keyParts = $this->explodeKey($this->key);
@@ -995,22 +1044,38 @@ abstract class Model
         }
     }
 
+    /**
+     * @param $key
+     * @return array
+     */
     private function explodeKey($key)
     {
         return explode($this->delimiter, $key);
     }
 
+    /**
+     * @param $parts
+     * @return string
+     */
     private function joinToKey($parts)
     {
         return join($this->delimiter, $parts);
     }
 
+    /**
+     * @param $part
+     * @return bool
+     */
     private function isUnboundField($part)
     {
         return $this->fieldWrapper[0] === $part[0]
         && $this->fieldWrapper[1] === $part[strlen($part) - 1];
     }
 
+    /**
+     * @param $part
+     * @return bool|string
+     */
     private function trimWrapper($part)
     {
         return substr($part, 1, -1);

@@ -9,7 +9,7 @@
  */
 
 namespace Limen\RedModel\Commands;
-use Limen\RedEnvelope\Exception;
+use \Exception;
 use Predis\Command\ScriptCommand;
 
 /**
