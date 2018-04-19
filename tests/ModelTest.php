@@ -402,33 +402,24 @@ class ModelTest extends TestCase
     {
         $numbers = [1,2,3,4,5,6,100,200,300];
         $listModel = new ListModel();
-        foreach ($numbers as $number) {
-            $listModel->where('id', 1)->rpush($number);
-        }
-        $this->assertEquals($listModel->where('id', 1), $numbers);
+        $listModel->newQuery()->where('id', 1)->rpush($numbers);
+        $this->assertEquals($listModel->newQuery()->where('id', 1)->first(), $numbers);
 
-        foreach ($numbers as $number) {
-            $listModel->where('id', 2)->lpush($number);
-        }
-        $this->assertEquals($listModel->where('id', 2), array_reverse($numbers));
+        $listModel->newQuery()->where('id', 2)->lpush($numbers);
+        $this->assertEquals($listModel->newQuery()->where('id', 2)->first(), array_reverse($numbers));
 
         // clean up
-        $listModel->whereIn('id', [1,2])->delete();
+        $listModel->newQuery()->whereIn('id', [1,2])->delete();
 
-        $this->assertEquals($listModel->whereIn('id', [1,2])->count(), 0);
+        $this->assertEquals($listModel->newQuery()->whereIn('id', [1,2])->count(), 0);
 
-        $set = [
-            'alibaba',
-            'google',
-            'amazon',
-            'apple',
-        ];
+        $set = ['alibaba', 'google', 'amazon', 'apple',];
         $model = new SetModel();
-        $model->where('id', 1)->sadd($set);
+        $model->newQuery()->where('id', 1)->sadd($set);
         $value = $model->find(1);
         $this->assertTrue($this->compareSet($value, $set));
 
-        $model->where('id', 1)->srem($set);
+        $model->newQuery()->where('id', 1)->srem($set);
         $this->assertFalse((bool)$model->find(1));
     }
 
