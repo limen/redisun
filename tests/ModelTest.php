@@ -196,7 +196,7 @@ class ModelTest extends TestCase
             'apple',
         ];
 
-        $model = new \Limen\RedModel\Examples\SetModel();
+        $model = new SetModel();
         $model->create(1, $set);
         $value = $model->find(1);
         $this->assertTrue($this->compareSet($value, $set));
@@ -396,6 +396,40 @@ class ModelTest extends TestCase
 
         $model->newQuery()->where('id',1)->delete();
         $this->assertEquals([], $model->all());
+    }
+
+    public function testNativeMethods()
+    {
+        $numbers = [1,2,3,4,5,6,100,200,300];
+        $listModel = new ListModel();
+        foreach ($numbers as $number) {
+            $listModel->where('id', 1)->rpush($number);
+        }
+        $this->assertEquals($listModel->where('id', 1), $numbers);
+
+        foreach ($numbers as $number) {
+            $listModel->where('id', 2)->lpush($number);
+        }
+        $this->assertEquals($listModel->where('id', 2), array_reverse($numbers));
+
+        // clean up
+        $listModel->whereIn('id', [1,2])->delete();
+
+        $this->assertEquals($listModel->whereIn('id', [1,2])->count(), 0);
+
+        $set = [
+            'alibaba',
+            'google',
+            'amazon',
+            'apple',
+        ];
+        $model = new SetModel();
+        $model->where('id', 1)->sadd($set);
+        $value = $model->find(1);
+        $this->assertTrue($this->compareSet($value, $set));
+
+        $model->where('id', 1)->srem($set);
+        $this->assertFalse((bool)$model->find(1));
     }
 
     protected function compareSet($a, $b)
