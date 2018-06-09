@@ -24,6 +24,7 @@ for i,v in ipairs(KEYS) do
     local ex = redis.pcall('exists', v);
     if ex==0 then
         return nil
+    end
 end 
 LUA;
         return $this;
@@ -36,6 +37,7 @@ for i,v in ipairs(KEYS) do
     local ex = redis.pcall('exists', v);
     if ex==1 then
         return nil
+    end
 end 
 LUA;
         return $this;
