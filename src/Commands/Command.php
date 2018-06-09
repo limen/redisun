@@ -135,7 +135,7 @@ abstract class Command extends ScriptCommand
 
     protected function getTmpKey()
     {
-        return uniqid('__limen__redmodel__' . time() . '__' . random_int(1, 1000) . '__');
+        return uniqid('__limen__redmodel__' . time() . '__' . rand(1, 1000) . '__');
     }
 
     protected function luaSetTtl($ttl)
