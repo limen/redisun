@@ -10,6 +10,7 @@
 
 namespace Limen\RedModel\Commands;
 use \Exception;
+use Limen\RedModel\Commands\Traits\Existence;
 use Predis\Command\ScriptCommand;
 
 /**
@@ -20,6 +21,8 @@ use Predis\Command\ScriptCommand;
  */
 abstract class Command extends ScriptCommand
 {
+    use Existence;
+
     /**
      * Keys to manipulate
      * @var array
@@ -94,6 +97,10 @@ abstract class Command extends ScriptCommand
      */
     function parseResponse($data)
     {
+        if (empty($data)) {
+            return [];
+        }
+
         if (isset($data[0]) && count($data[0]) === $this->getKeysCount()) {
             $items = array_combine($data[0], $data[1]);
 
@@ -128,7 +135,7 @@ abstract class Command extends ScriptCommand
 
     protected function getTmpKey()
     {
-        return uniqid('__limen__redmodel__' . time() . '__');
+        return uniqid('__limen__redmodel__' . time() . '__' . random_int(1, 1000) . '__');
     }
 
     protected function luaSetTtl($ttl)

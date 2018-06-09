@@ -371,10 +371,10 @@ abstract class Model
      * @param $id int|string Primary key
      * @param $value mixed
      * @param int $ttl
-     * @param bool $force if true the exists item would be replaced
+     * @param bool|null check key exists or not before create, not check if null
      * @return bool
      */
-    public function create($id, $value, $ttl = null, $force = true)
+    public function create($id, $value, $ttl = null, $exists = null)
     {
         $this->newQuery();
 
@@ -384,11 +384,31 @@ abstract class Model
             return false;
         }
 
-        if ($force === false && $this->redClient->exists($queryKey)) {
-            return false;
-        }
+        return $this->insertProxy($queryKey, $value, $ttl, $exists);
+    }
 
-        return $this->insertProxy($queryKey, $value, $ttl);
+    /**
+     * Similar to setnx
+     * @param $id
+     * @param $value
+     * @param null $ttl
+     * @return bool
+     */
+    public function createNotExists($id, $value, $ttl = null)
+    {
+        return $this->create($id, $value, $ttl, false);
+    }
+
+    /**
+     * Similar to setxx
+     * @param $id
+     * @param $value
+     * @param null $ttl
+     * @return bool
+     */
+    public function createExists($id, $value, $ttl = null)
+    {
+        return $this->create($id, $value, $ttl, true);
     }
 
     /**
@@ -678,9 +698,10 @@ abstract class Model
      * @param $key
      * @param $value
      * @param null $ttl
+     * @param null|bool $exists
      * @return bool
      */
-    protected function insertProxy($key, $value, $ttl = null)
+    protected function insertProxy($key, $value, $ttl = null, $exists = null)
     {
         $method = $this->getUpdateMethod();
 
@@ -696,9 +717,15 @@ abstract class Model
             $command->setTtl($ttl);
         }
 
+        if ($exists === false) {
+            $command->pleaseNotExists();
+        } elseif ($exists === true) {
+            $command->pleaseExists();
+        }
+
         $response = $this->executeCommand($command);
 
-        return (bool)$response[$key];
+        return isset($response[$key]) && $response[$key];
     }
 
     /**
