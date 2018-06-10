@@ -28,4 +28,24 @@ class CreationTest extends TestCase
         $this->assertFalse($set->createNotExists(1, $girl, 100));
         $hash->destroy(1);
     }
+
+    public function testInsert()
+    {
+        $string = new \Limen\RedModel\Examples\StringModel();
+
+        $bindings = [
+            'id' => 1,
+            'name' => 'demo',
+        ];
+        $string->newQuery()->insert($bindings, 'hello world!', 120);
+        $this->assertFalse($string->newQuery()->insert($bindings, 'hello world!', 120, false));
+        $this->assertTrue($string->newQuery()->insert($bindings, 'hello world!', 120, true));
+        $string->newQuery()->where('id', 1)->where('name', 'demo')->delete();
+
+        $list = new \Limen\RedModel\Examples\ListModel();
+        $list->newQuery()->insert(['id' => 1], [1,2,3], 120);
+        $this->assertFalse($list->newQuery()->insertNotExists(['id' => 1], [1,2,3], 120));
+        $this->assertTrue($list->newQuery()->insertExists(['id' => 1], [1,2,3], 120));
+        $list->destroy(1);
+    }
 }

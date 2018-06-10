@@ -156,8 +156,17 @@ $model->create(1, [
 ]);   // "shop:1:customers"将不会过期
 ```
 
+### createNotExists
+
+类似setnx，支持多种数据类型
+
+### createExists
+
+类似setxx，支持多种数据类型
 
 ### insert
+
+可选参数用于检查key是否存在，使insert的行为类似setnx或setxx.
 
 key表征如下的Zset类型的Model
 
@@ -170,6 +179,14 @@ $model->insert([
     'id' => 1,
 ], 10010, 20); 
 ```
+
+### insertNotExists
+
+类似createNotExists
+
+### insertExists
+
+类似createExists
 
 ### find
 使用条件同create

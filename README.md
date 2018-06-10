@@ -154,10 +154,16 @@ $model->create(1, [
 ]);   // the item "shop:1:customers" would not expire
 ```
 
+### createExists
+Similar to "setxx" but supports more data types: string, hash, set, zset and list.
+
+### createNotExists
+Similar to "setnx" but supports more data types.
 
 ### insert
 
-string type with key representation
+An optional parameter make it possible to insert like "setnx" and "setxx".
+String type with key representation. 
 
 ```
 user:{id}:code
@@ -168,6 +174,14 @@ $model->insert([
     'id' => 1,
 ], 10010, 20); // the item "user:1:code" would expire after 20 seconds 
 ```
+
+### insertExists
+
+Similar to createExists
+
+### insertNotExists
+
+Similar to createNotExists
 
 ### find
 Can use when a model's key representation has only one dynamic field as its primary field.

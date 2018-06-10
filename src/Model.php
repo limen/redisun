@@ -415,10 +415,10 @@ abstract class Model
      * @param array $bindings
      * @param $value
      * @param int $ttl
-     * @param bool $force
+     * @param bool $exists
      * @return mixed
      */
-    public function insert(array $bindings, $value, $ttl = null, $force = true)
+    public function insert(array $bindings, $value, $ttl = null, $exists = null)
     {
         $this->newQuery();
 
@@ -432,11 +432,37 @@ abstract class Model
             return false;
         }
 
-        if ($force === false && $this->redClient->exists($queryKey)) {
+        if ($exists === false && $this->redClient->exists($queryKey)) {
             return false;
         }
 
-        return $this->insertProxy($queryKey, $value, $ttl);
+        return $this->insertProxy($queryKey, $value, $ttl, $exists);
+    }
+
+    /**
+     * Insert when key exists
+     *
+     * @param array $bindings
+     * @param $value
+     * @param null $ttl
+     * @return mixed
+     */
+    public function insertExists(array $bindings, $value, $ttl = null)
+    {
+        return $this->insert($bindings, $value, $ttl, true);
+    }
+
+    /**
+     * Insert when key not exists
+     *
+     * @param array $bindings
+     * @param $value
+     * @param null $ttl
+     * @return mixed
+     */
+    public function insertNotExists(array $bindings, $value, $ttl = null)
+    {
+        return $this->insert($bindings, $value, $ttl, false);
     }
 
     /**
