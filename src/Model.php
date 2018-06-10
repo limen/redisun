@@ -432,10 +432,6 @@ abstract class Model
             return false;
         }
 
-        if ($exists === false && $this->redClient->exists($queryKey)) {
-            return false;
-        }
-
         return $this->insertProxy($queryKey, $value, $ttl, $exists);
     }
 
