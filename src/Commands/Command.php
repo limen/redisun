@@ -11,6 +11,7 @@
 namespace Limen\RedModel\Commands;
 use \Exception;
 use Limen\RedModel\Commands\Traits\Existence;
+use Limen\RedModel\Model;
 use Predis\Command\ScriptCommand;
 
 /**
@@ -141,11 +142,17 @@ abstract class Command extends ScriptCommand
     protected function luaSetTtl($ttl)
     {
         if (!$ttl) {
-            return '';
-        }
-
-        return <<<LUA
+            $script = '';
+        } elseif ($ttl == Model::TTL_PERSIST) {
+            $script = <<<LUA
+redis.pcall('persist', v);
+LUA;
+        } else {
+            $script = <<<LUA
 redis.pcall('expire', v, $ttl);
 LUA;
+        }
+
+        return $script;
     }
 }

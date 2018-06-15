@@ -32,6 +32,9 @@ abstract class Model
     const TYPE_LIST = 'list';
     const TYPE_HASH = 'hash';
 
+    // not expired ttl
+    const TTL_PERSIST = '-1';
+
     /**
      * Redis data type
      * @var string

@@ -1,4 +1,4 @@
-# CURD model for redis in laravel style
+# CURD model for redis, unify api for all data types.
 
 [![Build Status](https://travis-ci.org/limen/redmodel.svg?branch=master)](https://travis-ci.org/limen/redmodel)
 [![Packagist](https://img.shields.io/packagist/l/limen/redmodel.svg?maxAge=2592000)](https://packagist.org/packages/limen/redmodel)
