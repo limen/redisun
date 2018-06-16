@@ -206,7 +206,7 @@ $model->findBatch([1,2,3]);
 
 Similar to findBatch.
 
-The key would not be created if not exist. The key's ttl would not be modified if the ttl parameter not set.
+The key would be created if not exist. The key's ttl would not be modified if the ttl parameter not set.
 
 ```
 $model->updateBatch([1,2,3], $value);
@@ -251,7 +251,7 @@ $model->whereIn('id', [1,2,3])->first();    // return string|array|null
 
 ### update
 
-The key would not be created if not exist. The key's ttl would not be modified if the ttl parameter not set.
+The key would be created if not exist. The key's ttl would not be modified if the ttl parameter not set.
 
 ```
 $model->where('id',1)->update($value);

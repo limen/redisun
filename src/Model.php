@@ -731,7 +731,6 @@ abstract class Model
 
         $value = $this->castValueForUpdate($value);
         $command = $this->commandFactory->getCommand($method, [$key], $value);
-
         if ($ttl) {
             $command->setTtl($ttl);
         }
@@ -756,16 +755,13 @@ abstract class Model
     protected function updateBatchProxy($keys, $value, $ttl = null)
     {
         $method = $this->getUpdateMethod();
-
         if (empty($method)) {
             return false;
         }
 
         $value = $this->castValueForUpdate($value);
-
         $command = $this->commandFactory->getCommand($method, $keys, $value);
         $command->pleaseDeleteIfExists();
-
         if ($ttl) {
             $command->setTtl($ttl);
         }

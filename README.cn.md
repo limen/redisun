@@ -212,7 +212,7 @@ $model->findBatch([1,2,3]);
 
 类似于findBatch.
 
-不存在的key将不被创建。
+不存在的key将被创建。
 
 如果不传入ttl参数，key的ttl将不被改变。
 
@@ -258,7 +258,7 @@ $model->whereIn('id', [1,2,3])->first();    // return string|array|null
 
 ### update
 
-如果key不存在，将不会创建
+如果key不存在，将被创建
 
 如果不传入ttl参数，key的ttl将不被改变。
 
