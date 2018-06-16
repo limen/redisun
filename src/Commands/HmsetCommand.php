@@ -18,12 +18,14 @@ class HmsetCommand extends Command
         $luaSetTtl = $this->luaSetTtl($this->getTtl());
         $setTtl = $luaSetTtl ? 1 : 0;
         $checkExist = $this->existenceScript;
+        $delScript = $this->deleteScript;
 
         $script = <<<LUA
 $checkExist
 local values = {}; 
 local setTtl = '$setTtl';
 for i,v in ipairs(KEYS) do 
+    $delScript
     values[#values+1] = redis.pcall('hmset',v, $argString); 
     if setTtl == '1' then
         $luaSetTtl

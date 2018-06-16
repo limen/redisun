@@ -770,6 +770,7 @@ abstract class Model
         $value = $this->castValueForUpdate($value);
 
         $command = $this->commandFactory->getCommand($method, $keys, $value);
+        $command->pleaseDeleteIfExists();
 
         if ($ttl) {
             $command->setTtl($ttl);

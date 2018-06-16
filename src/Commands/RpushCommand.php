@@ -19,18 +19,15 @@ class RpushCommand extends Command
         $luaSetTtl = $this->luaSetTtl($this->getTtl());
         $setTtl = $luaSetTtl ? 1 : 0;
         $checkScript = $this->existenceScript;
+        $delScript = $this->deleteScript;
 
         $script = <<<LUA
 $checkScript
 local values = {}; 
 local setTtl = '$setTtl';
 for i,v in ipairs(KEYS) do
-    local members = redis.pcall('lrange', v, 0, -1);
-    local len = #members;
+    $delScript
     local rs = redis.pcall('rpush',v,$elementsPart);
-    if rs then
-        redis.pcall('ltrim', v, len, -1);
-    end
     if setTtl=='1' then
         $luaSetTtl
     end

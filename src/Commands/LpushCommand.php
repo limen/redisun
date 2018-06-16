@@ -9,18 +9,15 @@ class LpushCommand extends Command
         $luaSetTtl = $this->luaSetTtl($this->getTtl());
         $setTtl = $luaSetTtl ? 1 : 0;
         $checkScript = $this->existenceScript;
+        $delScript = $this->deleteScript;
 
         $script = <<<LUA
 $checkScript
 local values = {}; 
 local setTtl = '$setTtl';
 for i,v in ipairs(KEYS) do
-    local members = redis.pcall('lrange', v, 0, -1);
-    local len = #members;
+    $delScript
     local rs = redis.pcall('lpush',v,$elementsPart);
-    if rs and len>0 then
-        redis.pcall('ltrim', v, 0, -1 - len);
-    end
     if setTtl=='1' then
         $luaSetTtl
     end

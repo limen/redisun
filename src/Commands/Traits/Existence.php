@@ -17,6 +17,8 @@ trait Existence
 {
     protected $existenceScript = '';
 
+    protected $deleteScript = '';
+
     public function pleaseExists()
     {
         $this->existenceScript = <<<LUA
@@ -39,6 +41,14 @@ for i,v in ipairs(KEYS) do
         return nil
     end
 end 
+LUA;
+        return $this;
+    }
+
+    public function pleaseDeleteIfExists()
+    {
+        $this->deleteScript = <<<LUA
+redis.pcall('del', v);
 LUA;
         return $this;
     }
