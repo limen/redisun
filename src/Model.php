@@ -128,9 +128,7 @@ abstract class Model
     public function newQuery()
     {
         $this->orderBys = [];
-
         $this->limit = null;
-
         $this->offset = null;
 
         return $this->freshQueryBuilder();
@@ -602,9 +600,7 @@ abstract class Model
     public function updateBatch(array $ids, $value, $ttl = null)
     {
         $this->newQuery()->whereIn($this->getPrimaryFieldName(), $ids);
-
         $queryKeys = $this->prepareCompleteKeys();
-
         if (!$queryKeys) {
             return false;
         }
@@ -729,13 +725,11 @@ abstract class Model
     protected function insertProxy($key, $value, $ttl = null, $exists = null)
     {
         $method = $this->getUpdateMethod();
-
         if (!$method) {
             return false;
         }
 
         $value = $this->castValueForUpdate($value);
-
         $command = $this->commandFactory->getCommand($method, [$key], $value);
 
         if ($ttl) {
@@ -747,7 +741,7 @@ abstract class Model
         } elseif ($exists === true) {
             $command->pleaseExists();
         }
-
+        $command->pleaseDeleteIfExists();
         $response = $this->executeCommand($command);
 
         return isset($response[$key]) && $response[$key];

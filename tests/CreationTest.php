@@ -26,7 +26,7 @@ class CreationTest extends TestCase
         $set->create(1, $girls, 100);
         $this->assertTrue($set->createExists(1, $girl, 100));
         $this->assertFalse($set->createNotExists(1, $girl, 100));
-        $hash->destroy(1);
+        $set->destroy(1);
     }
 
     public function testInsert()

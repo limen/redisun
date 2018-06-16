@@ -98,11 +98,9 @@ class ModelTest extends TestCase
         $this->assertEquals(1, count($data));
         $this->assertEquals($b, $data['redmodel:2:hash']);
 
-        $updated = $a;
-        $model->newQuery()->where('id', 1)->update([
-            'age' => 24
-        ]);
+        $updated = [];
         $updated['age'] = '24';
+        $model->newQuery()->where('id', 1)->update($updated);
         $value = $model->newQuery()->where('id', 1)->first();
         $this->assertEquals($updated, $value);
 
@@ -195,27 +193,26 @@ class ModelTest extends TestCase
             'amazon',
             'apple',
         ];
-
+        sort($set);
         $model = new SetModel();
         $model->create(1, $set);
         $value = $model->find(1);
-        $this->assertTrue($this->compareSet($value, $set));
+        sort($value);
+        $this->assertEquals($value, $set);
 
-        unset($set['alibaba']);
+        array_pop($set);
         $model->where('id', 1)->update($set);
         $value = $model->find(1);
-        $this->assertTrue($this->compareSet($value, $set));
-
+        sort($value);
+        $this->assertEquals($value, $set);
         $model->destroy(1);
         $this->assertEquals($model->find(1), []);
-
         $this->assertEquals($model->all(), []);
     }
 
     public function testAggregation()
     {
         $model = new StringModel();
-
         $model->insert([
             'id' => 1,
             'name' => 'martin',
@@ -230,21 +227,13 @@ class ModelTest extends TestCase
         ],30);
 
         $this->assertEquals(60, $model->newQuery()->sum());
-
         $this->assertEquals(10, $model->newQuery()->min());
-
         $this->assertEquals(30, $model->newQuery()->max());
-
         $this->assertEquals(3, $model->newQuery()->count());
-
         $this->assertEquals(1, $model->newQuery()->where('id',1)->count());
-
         $this->assertEquals(3, $model->newQuery()->where('name', 'martin')->count());
-
         $this->assertEquals(0, $model->newQuery()->where('name', 'maria')->count());
-
         $model->newQuery()->whereIn('id', [1,2,3])->where('name', 'martin')->delete();
-
         $this->assertEquals($model->all(), []);
     }
 
@@ -315,8 +304,6 @@ class ModelTest extends TestCase
         $model->where('id', 1)->update([
             'age' => 26,
         ]);
-//        $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->ttl());
-//        $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->ttl());
         $this->assertEquals($ttl, $model->newQuery()->where('id',1)->ttl());
 
         $model->updateBatch([1,2], [

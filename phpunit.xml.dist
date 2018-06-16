@@ -7,7 +7,7 @@
          convertnoticestoexceptions="true"
          convertwarningstoexceptions="true"
          processisolation="false"
-         stopOnFailure="true"
+         stopOnFailure="false"
          syntaxcheck="false"
          verbose="true">
     <testsuites>
