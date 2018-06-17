@@ -9,9 +9,27 @@ This package is based on [predis](https://github.com/nrk/predis "")
 
 ## Features
 
++ Unified commands for different data types.
 + supports most of queries usually used in relational database such as MySql. 
-+ fluent query builder
++ fluent query builder.
 + use "eval" to save time consumption on network.
+
+## Unified commands
+
++ create: create key
++ createNotExists: create key when which not exists
++ createExists: create key when which exists
++ insert: similar to create except supporting multiple keys
++ insertNotExists: similar to createNotExists
++ insertExists: similar to createExists
++ get: get key to replace get, lrange, hgetall, smembers and zrange
++ getAndSet: get key and set new value
++ find: similar to get
++ findBatch: find batch
++ update: update keys
++ destroy: remove one key
++ destroyBatch: remove keys
++ delete: remove keys
 
 ## Installation
 
