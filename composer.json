@@ -18,7 +18,7 @@
   ],
   "license": "MIT",
   "require": {
-    "php": ">=5.4",
+    "php": ">=5.5",
     "predis/predis": "1.1.*"
   },
   "require-dev": {
