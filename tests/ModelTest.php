@@ -16,47 +16,45 @@ class ModelTest extends TestCase
 {
     public function testQueryKeys()
     {
-        $model = new StringModel();
-
-        $range = range(1,20);
-
-        $keys = [];
-
-        foreach ($range as $i) {
-            $model->insert([
-                'id' => $i,
-                'name' => 'martin',
-            ],'22');
-            $keys[] = "redmodel:$i:string:martin";
+        try {
+            $model = new StringModel();
+            $range = range(1,20);
+            $keys = [];
+            foreach ($range as $i) {
+                $model->insert([
+                    'id' => $i,
+                    'name' => 'martin',
+                ],'22');
+                $keys[] = "redmodel:$i:string:martin";
+            }
+            $value = $model->newQuery()->where('id', 1)->getKeys();
+            $this->assertEquals([
+                "redmodel:1:string:martin",
+            ], $value);
+            $value = $model->newQuery()->whereIn('id', [1,2])->getKeys();
+            $this->assertEquals([
+                "redmodel:1:string:martin",
+                "redmodel:2:string:martin",
+            ], $value);
+            $value = $model->newQuery()
+                ->whereIn('id', [1,2,3,4,5,6])
+                ->orderBy('id')
+                ->take(5)
+                ->getKeys();
+            $this->assertEquals([
+                "redmodel:1:string:martin",
+                "redmodel:2:string:martin",
+                "redmodel:3:string:martin",
+                "redmodel:4:string:martin",
+                "redmodel:5:string:martin",
+            ], $value);
+            $model->newQuery()->whereIn('id', $range)->delete();
+            $this->assertEquals([], $model->all());
+        } catch (Exception $e) {
+            throw $e;
+        } finally {
+            $model->newQuery()->whereIn('id', $range)->delete();
         }
-
-        $value = $model->newQuery()->where('id', 1)->getKeys();
-        $this->assertEquals([
-            "redmodel:1:string:martin",
-        ], $value);
-
-        $value = $model->newQuery()->whereIn('id', [1,2])->getKeys();
-        $this->assertEquals([
-            "redmodel:1:string:martin",
-            "redmodel:2:string:martin",
-        ], $value);
-
-        $value = $model->newQuery()
-            ->whereIn('id', [1,2,3,4,5,6])
-            ->orderBy('id')
-            ->take(5)
-            ->getKeys();
-        $this->assertEquals([
-            "redmodel:1:string:martin",
-            "redmodel:2:string:martin",
-            "redmodel:3:string:martin",
-            "redmodel:4:string:martin",
-            "redmodel:5:string:martin",
-        ], $value);
-
-        $model->newQuery()->whereIn('id', $range)->delete();
-
-        $this->assertEquals([], $model->all());
     }
 
     public function testHashModel()
@@ -140,7 +138,6 @@ class ModelTest extends TestCase
     public function testStringModel()
     {
         $value = 'martin-walk';
-
         $model = new StringModel();
         $model->insert([
             'id' => 1,
@@ -370,7 +367,7 @@ class ModelTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->ttl());
         $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->ttl());
 
-        sleep($ttl);
+        sleep($ttl + 1);
         $this->assertEquals([], $model->newQuery()->where('id',1)->get());
 
         $model->create(1, [

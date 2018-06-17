@@ -15,7 +15,6 @@ class SaddCommand extends Command
     public function getScript()
     {
         $elementsPart = $this->joinArguments();
-
         $luaSetTtl = $this->luaSetTtl($this->getTtl());
         $setTtl = $luaSetTtl ? 1 : 0;
         $checkScript = $this->existenceScript;

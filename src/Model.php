@@ -378,9 +378,7 @@ abstract class Model
     public function create($id, $value, $ttl = null, $exists = null)
     {
         $this->newQuery();
-
         $queryKey = $this->queryBuilder->whereEqual($this->primaryFieldName, $id)->firstQueryKey();
-
         if (!$this->isCompleteKey($queryKey)) {
             return false;
         }
@@ -609,6 +607,43 @@ abstract class Model
     }
 
     /**
+     * Get key and set new value
+     *
+     * @param string|array $value
+     * @param null $ttl
+     * @return mixed
+     * @throws Exception
+     */
+    public function getAndSet($value, $ttl = null)
+    {
+        $keys = $this->queryBuilder->getQueryKeys();
+        if (count($keys) > 1) {
+            throw new Exception('GetAndSet doesnt support multiple keys');
+        } elseif (count($keys) == 0) {
+            throw new Exception('No query keys');
+        }
+        $key = $keys[0];
+        if (!$this->isCompleteKey($key)) {
+            throw new Exception('Not complete key');
+        }
+
+        $value = $this->castValueForUpdate($value);
+        $commandName = 'getset' . ucfirst($this->type);
+        $command = $this->commandFactory->getCommand($commandName, [$key], $value);
+        if (!is_null($ttl)) {
+            $command->setTtl($ttl);
+        }
+        $result = $this->executeCommand($command);
+        $data = isset($result[$key]) ? $result[$key] : null;
+        if ($data && $this->type == static::TYPE_HASH) {
+            $data = $this->resolveHash($data);
+        }
+
+        return $data;
+
+    }
+
+    /**
      * Call Predis function
      * @param $method
      * @param array $parameters
@@ -775,22 +810,18 @@ abstract class Model
      */
     protected function getProxy($queryKeys = null)
     {
-        $data = [];
-
         if ($queryKeys === null) {
             $queryKeys = $this->prepareKeys();
         }
 
+        $data = [];
         if ($queryKeys) {
             list($method, $params) = $this->getFindMethodAndParameters();
-
             $command = $this->commandFactory->getCommand($method, $queryKeys);
-
             $data = $this->executeCommand($command);
         }
-
         if ($data && $this->type == static::TYPE_HASH) {
-            $data = $this->rawHashToAssocArray($data);
+            $data = $this->resolveHashes($data);
         }
 
         return $data;
@@ -1129,20 +1160,30 @@ abstract class Model
      * @param array $hashes
      * @return array
      */
-    private function rawHashToAssocArray(array $hashes)
+    private function resolveHashes(array $hashes)
     {
         $assoc = [];
-
         foreach ($hashes as $k => $hash) {
-            $item = [];
-            for ($i = 0; $i < count($hash); $i = $i + 2) {
-                $item[$hash[$i]] = $hash[$i + 1];
-            }
+            $item = $this->resolveHash($hash);
             if ($item) {
                 $assoc[$k] = $item;
             }
         }
 
         return $assoc;
+    }
+
+    /**
+     * @param $hash
+     * @return array
+     */
+    private function resolveHash($hash)
+    {
+        $array = [];
+        for ($i = 0; $i < count($hash); $i = $i + 2) {
+            $array[$hash[$i]] = $hash[$i + 1];
+        }
+
+        return $array;
     }
 }
