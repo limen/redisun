@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the Redmodel package.
+ * This file is part of the Redisun package.
  *
  * (c) LI Mengxiang <limengxiang876@gmail.com>
  *
@@ -8,13 +8,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Limen\RedModel;
+namespace Limen\Redisun;
 use \Exception;
 
 /**
  * Build redis keys for model
  * Class QueryBuilder
- * @package Limen\RedModel
+ * @package Limen\Redisun
  *
  * @author LI Mengxiang <limengxiang876@gmail.com>
  */

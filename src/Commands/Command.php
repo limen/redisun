@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the Redmodel package.
+ * This file is part of the Redisun package.
  *
  * (c) LI Mengxiang <limengxiang876@gmail.com>
  *
@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Limen\RedModel\Commands;
+namespace Limen\Redisun\Commands;
 use \Exception;
-use Limen\RedModel\Commands\Traits\Existence;
-use Limen\RedModel\Model;
+use Limen\Redisun\Commands\Traits\Existence;
+use Limen\Redisun\Model;
 use Predis\Command\ScriptCommand;
 
 /**
  * Lua script command
  *
  * Class Command
- * @package Limen\RedModel\Commands
+ * @package Limen\Redisun\Commands
  */
 abstract class Command extends ScriptCommand
 {
@@ -136,7 +136,7 @@ abstract class Command extends ScriptCommand
 
     protected function getTmpKey()
     {
-        return uniqid('__limen__redmodel__' . time() . '__' . rand(1, 1000) . '__');
+        return uniqid('__limen__redisun__' . time() . '__' . rand(1, 1000) . '__');
     }
 
     protected function luaSetTtl($ttl)

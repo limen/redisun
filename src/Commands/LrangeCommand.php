@@ -1,10 +1,10 @@
 <?php
-namespace Limen\RedModel\Commands;
+namespace Limen\Redisun\Commands;
 
 /**
  * Command for lrange
  * Class LrangeCommand
- * @package Limen\RedModel\Commands
+ * @package Limen\Redisun\Commands
  */
 class LrangeCommand extends Command
 {

@@ -1,7 +1,7 @@
 # CURD model for redis in laravel style
 
-[![Build Status](https://travis-ci.org/limen/redmodel.svg?branch=master)](https://travis-ci.org/limen/redmodel)
-[![Packagist](https://img.shields.io/packagist/l/limen/redmodel.svg?maxAge=2592000)](https://packagist.org/packages/limen/redmodel)
+[![Build Status](https://travis-ci.org/limen/redisun.svg?branch=master)](https://travis-ci.org/limen/redisun)
+[![Packagist](https://img.shields.io/packagist/l/limen/redisun.svg?maxAge=2592000)](https://packagist.org/packages/limen/redisun)
 
 让redis操作变得简单。
 
@@ -20,14 +20,14 @@
 推荐使用[composer](https://getcomposer.org/ "")安装
 
 ```bash
-composer require "limen/redmodel"
+composer require "limen/redisun"
 ```
 
 ## 使用
 
 ```
-use Limen\RedModel\Examples\HashModel;
-use Limen\RedModel\Examples\StringModel;
+use Limen\Redisun\Examples\HashModel;
+use Limen\Redisun\Examples\StringModel;
 
 $person = [
    'name' => 'martin',
@@ -39,8 +39,8 @@ $hashModel = new HashModel();
 $hashModel->create(1, $person);
 $hashModel->find(1);                    // 返回 $person
 $hashModel->where('id',1)->first();     // 返回 $person
-$hashModel->where('id',1)->get();       // 返回 ['redmodel:1:hash' => $person]
-$hashModel->where('id',1)->delete();    // 从redis数据库删除"redmodel:1:hash"
+$hashModel->where('id',1)->get();       // 返回 ['redisun:1:hash' => $person]
+$hashModel->where('id',1)->delete();    // 从redis数据库删除"redisun:1:hash"
 
 $nick = 'martin-walk';
 
@@ -50,7 +50,7 @@ $stringModel->insert([
     'name' => 'martin'
 ], $nick);
 $stringModel->where('id',1)->first();   // 返回 $nick
-$stringModel->where('id',1)->get();     // 返回 ['redmodel:1:string:martin' => $nick]
+$stringModel->where('id',1)->get();     // 返回 ['redisun:1:string:martin' => $nick]
 ```
 
 ## 概念

@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the Redmodel package.
+ * This file is part of the Redisun package.
  *
  * (c) LI Mengxiang <limengxiang876@gmail.com>
  *
@@ -8,19 +8,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Limen\RedModel;
+namespace Limen\Redisun;
 
 use Exception;
-use Limen\RedModel\Commands\Command;
-use Limen\RedModel\Commands\Factory;
-use Limen\RedModel\Commands\FactoryInterface;
+use Limen\Redisun\Commands\Command;
+use Limen\Redisun\Commands\Factory;
+use Limen\Redisun\Commands\FactoryInterface;
 use Predis\Client as RedisClient;
 
 /**
  * CRUD model for redis
  * Class Model
  *
- * @package Limen\RedModel
+ * @package Limen\Redisun
  *
  * @author LI Mengxiang <limengxiang876@gmail.com>
  */

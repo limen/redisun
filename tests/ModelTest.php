@@ -1,11 +1,11 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Limen\RedModel\Examples\HashModel;
-use Limen\RedModel\Examples\ListModel;
-use Limen\RedModel\Examples\StringModel;
-use Limen\RedModel\Examples\ZsetModel;
-use Limen\RedModel\Examples\SetModel;
+use Limen\Redisun\Examples\HashModel;
+use Limen\Redisun\Examples\ListModel;
+use Limen\Redisun\Examples\StringModel;
+use Limen\Redisun\Examples\ZsetModel;
+use Limen\Redisun\Examples\SetModel;
 
 /**
  * Class ModelTest
@@ -25,16 +25,16 @@ class ModelTest extends TestCase
                     'id' => $i,
                     'name' => 'martin',
                 ],'22');
-                $keys[] = "redmodel:$i:string:martin";
+                $keys[] = "redisun:$i:string:martin";
             }
             $value = $model->newQuery()->where('id', 1)->getKeys();
             $this->assertEquals([
-                "redmodel:1:string:martin",
+                "redisun:1:string:martin",
             ], $value);
             $value = $model->newQuery()->whereIn('id', [1,2])->getKeys();
             $this->assertEquals([
-                "redmodel:1:string:martin",
-                "redmodel:2:string:martin",
+                "redisun:1:string:martin",
+                "redisun:2:string:martin",
             ], $value);
             $value = $model->newQuery()
                 ->whereIn('id', [1,2,3,4,5,6])
@@ -42,11 +42,11 @@ class ModelTest extends TestCase
                 ->take(5)
                 ->getKeys();
             $this->assertEquals([
-                "redmodel:1:string:martin",
-                "redmodel:2:string:martin",
-                "redmodel:3:string:martin",
-                "redmodel:4:string:martin",
-                "redmodel:5:string:martin",
+                "redisun:1:string:martin",
+                "redisun:2:string:martin",
+                "redisun:3:string:martin",
+                "redisun:4:string:martin",
+                "redisun:5:string:martin",
             ], $value);
             $model->newQuery()->whereIn('id', $range)->delete();
             $this->assertEquals([], $model->all());
@@ -94,7 +94,7 @@ class ModelTest extends TestCase
 
         $data = $model->newQuery()->whereIn('id', [1,2])->orderBy('id', 'desc')->take(1)->get();
         $this->assertEquals(1, count($data));
-        $this->assertEquals($b, $data['redmodel:2:hash']);
+        $this->assertEquals($b, $data['redisun:2:hash']);
 
         $updated = [];
         $updated['age'] = '24';

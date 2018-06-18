@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Limen\RedModel\QueryBuilder;
+use Limen\Redisun\QueryBuilder;
 
 /**
  * Class QueryBuilderTest

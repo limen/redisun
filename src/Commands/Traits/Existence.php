@@ -5,13 +5,13 @@
  * Date: 2018/6/9
  */
 
-namespace Limen\RedModel\Commands\Traits;
+namespace Limen\Redisun\Commands\Traits;
 
 /**
  * Check key exists or not before create
  *
  * Trait Existence
- * @package Limen\RedModel\Commands\Traits
+ * @package Limen\Redisun\Commands\Traits
  */
 trait Existence
 {

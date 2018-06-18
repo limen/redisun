@@ -1,5 +1,5 @@
 <?php
-namespace Limen\RedModel\Commands;
+namespace Limen\Redisun\Commands;
 
 class GetsetListCommand extends Command
 {

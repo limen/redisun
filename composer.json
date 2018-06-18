@@ -1,5 +1,5 @@
 {
-  "name": "limen/redmodel",
+  "name": "limen/redisun",
   "description": "CURD model for Redis in laravel style.",
   "type": "library",
   "keywords": [
@@ -8,7 +8,7 @@
     "orm",
     "model"
   ],
-  "homepage": "https://github.com/limen/redmodel",
+  "homepage": "https://github.com/limen/redisun",
   "authors": [
     {
       "name": "LI Mengxiang",
@@ -26,7 +26,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Limen\\RedModel\\": "src/"
+      "Limen\\Redisun\\": "src/"
     }
   }
 }

@@ -5,14 +5,14 @@
  * Date: 2018/6/17
  */
 use PHPUnit\Framework\TestCase;
-use Limen\RedModel\Examples\StringModel;
+use Limen\Redisun\Examples\StringModel;
 
 class GetsetTest extends TestCase
 {
     public function testZset()
     {
         try {
-            $model = new \Limen\RedModel\Examples\ZsetModel();
+            $model = new \Limen\Redisun\Examples\ZsetModel();
             $model->create(1, ['google' => 18]);
             $oldValue = $model->where('id', 1)->getAndSet(['ms' => 19]);
             $this->assertEquals($oldValue, ['google']);
@@ -28,7 +28,7 @@ class GetsetTest extends TestCase
     public function testSet()
     {
         try {
-            $model = new \Limen\RedModel\Examples\SetModel();
+            $model = new \Limen\Redisun\Examples\SetModel();
             $model->create(1, [1,2,3]);
             $oldValue = $model->where('id', 1)->getAndSet([1,2,3,4]);
             $this->assertEquals($oldValue, [1,2,3]);
@@ -44,7 +44,7 @@ class GetsetTest extends TestCase
     public function testList()
     {
         try {
-            $model = new \Limen\RedModel\Examples\ListModel();
+            $model = new \Limen\Redisun\Examples\ListModel();
             $model->create(1, [1,2,3]);
             $oldValue = $model->where('id', 1)->getAndSet([1,2,3,4]);
             $this->assertEquals($oldValue, [1,2,3]);
@@ -64,7 +64,7 @@ class GetsetTest extends TestCase
                 'name' => 'maria',
                 'age' => 22,
             ];
-            $model = new \Limen\RedModel\Examples\HashModel();
+            $model = new \Limen\Redisun\Examples\HashModel();
             $model->create(1, $person);
             $oldValue = $model->where('id', 1)->getAndSet(['name' => 'maria']);
             $this->assertEquals($oldValue, $person);

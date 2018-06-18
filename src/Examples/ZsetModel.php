@@ -1,9 +1,9 @@
 <?php
-namespace Limen\RedModel\Examples;
+namespace Limen\Redisun\Examples;
 
 class ZsetModel extends BaseModel
 {
     protected $type = 'zset';
 
-    protected $key = 'redmodel:{id}:zset';
+    protected $key = 'redisun:{id}:zset';
 }

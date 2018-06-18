@@ -1,9 +1,9 @@
 <?php
-namespace Limen\RedModel\Examples;
+namespace Limen\Redisun\Examples;
 
 class HashModel extends BaseModel
 {
-    protected $key = 'redmodel:{id}:hash';
+    protected $key = 'redisun:{id}:hash';
 
     protected $type = 'hash';
 }

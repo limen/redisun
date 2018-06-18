@@ -1,7 +1,7 @@
 # CURD model for redis, unify api for all data types.
 
-[![Build Status](https://travis-ci.org/limen/redmodel.svg?branch=master)](https://travis-ci.org/limen/redmodel)
-[![Packagist](https://img.shields.io/packagist/l/limen/redmodel.svg?maxAge=2592000)](https://packagist.org/packages/limen/redmodel)
+[![Build Status](https://travis-ci.org/limen/redisun.svg?branch=master)](https://travis-ci.org/limen/redisun)
+[![Packagist](https://img.shields.io/packagist/l/limen/redisun.svg?maxAge=2592000)](https://packagist.org/packages/limen/redisun)
 
 Make Redis manipulations easy.
 
@@ -36,14 +36,14 @@ This package is based on [predis](https://github.com/nrk/predis "")
 Recommend to install via [composer](https://getcomposer.org/ "").
 
 ```bash
-composer require "limen/redmodel"
+composer require "limen/redisun"
 ```
 
 ## Usage
 
 ```
-use Limen\RedModel\Examples\HashModel;
-use Limen\RedModel\Examples\StringModel;
+use Limen\Redisun\Examples\HashModel;
+use Limen\Redisun\Examples\StringModel;
 
 $person = [
    'name' => 'martin',
@@ -55,8 +55,8 @@ $hashModel = new HashModel();
 $hashModel->create(1, $person);
 $hashModel->find(1);                    // return $person
 $hashModel->where('id',1)->first();     // return $person
-$hashModel->where('id',1)->get();       // return ['redmodel:1:hash' => $person]
-$hashModel->where('id',1)->delete();    // remove key "redmodel:1:hash" from database
+$hashModel->where('id',1)->get();       // return ['redisun:1:hash' => $person]
+$hashModel->where('id',1)->delete();    // remove key "redisun:1:hash" from database
 
 $nick = 'martin-walk';
 
@@ -66,7 +66,7 @@ $stringModel->insert([
     'name' => 'martin'
 ], $nick);
 $stringModel->where('id',1)->first();   // return $nick
-$stringModel->where('id',1)->get();     // return ['redmodel:1:string:martin' => $nick]
+$stringModel->where('id',1)->get();     // return ['redisun:1:string:martin' => $nick]
 ```
 
 ## Concepts

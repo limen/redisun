@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Limen\RedModel\Examples\HashModel;
-use Limen\RedModel\Examples\SetModel;
+use Limen\Redisun\Examples\HashModel;
+use Limen\Redisun\Examples\SetModel;
 
 class CreationTest extends TestCase
 {
@@ -42,7 +42,7 @@ class CreationTest extends TestCase
     public function testInsert()
     {
         try {
-            $string = new \Limen\RedModel\Examples\StringModel();
+            $string = new \Limen\Redisun\Examples\StringModel();
             $bindings = [
                 'id' => 1,
                 'name' => 'demo',
@@ -57,7 +57,7 @@ class CreationTest extends TestCase
         }
 
         try {
-            $list = new \Limen\RedModel\Examples\ListModel();
+            $list = new \Limen\Redisun\Examples\ListModel();
             $list->newQuery()->insert(['id' => 1], [1,2,3], 120);
             $this->assertFalse($list->newQuery()->insertNotExists(['id' => 1], [1,2,3], 120));
             $this->assertTrue($list->newQuery()->insertExists(['id' => 1], [1,2,3], 120));

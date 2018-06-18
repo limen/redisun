@@ -1,9 +1,9 @@
 <?php
-namespace Limen\RedModel\Examples;
+namespace Limen\Redisun\Examples;
 
 class ListModel extends BaseModel
 {
     protected $type = 'list';
 
-    protected $key = 'redmodel:{id}:list';
+    protected $key = 'redisun:{id}:list';
 }

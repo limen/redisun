@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the Redmodel package.
+ * This file is part of the Redisun package.
  *
  * (c) LI Mengxiang <limengxiang876@gmail.com>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Limen\RedModel\Commands;
+namespace Limen\Redisun\Commands;
 
 /**
  * Command for "hgetall"
  * Class HgetallCommand
- * @package Limen\RedModel\Commands
+ * @package Limen\Redisun\Commands
  */
 class HgetallCommand extends Command
 {

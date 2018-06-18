@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the Redmodel package.
+ * This file is part of the Redisun package.
  *
  * (c) LI Mengxiang <limengxiang876@gmail.com>
  *
@@ -8,13 +8,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Limen\RedModel\Examples;
+namespace Limen\Redisun\Examples;
 
-use Limen\RedModel\Model;
+use Limen\Redisun\Model;
 
 /**
  * Class BaseModel
- * @package Limen\RedModel\Examples
+ * @package Limen\Redisun\Examples
  *
  * @author LI Mengxiang <limengxiang876@gmail.com>
  */

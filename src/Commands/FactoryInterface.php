@@ -5,7 +5,7 @@
  * @since 2017/4/1 14:09
  */
 
-namespace Limen\RedModel\Commands;
+namespace Limen\Redisun\Commands;
 
 interface FactoryInterface
 {

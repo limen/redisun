@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Limen\RedModel\Commands\Factory;
+use Limen\Redisun\Commands\Factory;
 
 class CommandTest extends TestCase
 {

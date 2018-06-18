@@ -1,9 +1,9 @@
 <?php
-namespace Limen\RedModel\Examples;
+namespace Limen\Redisun\Examples;
 
 class StringModel extends BaseModel
 {
-    protected $key = 'redmodel:{id}:string:{name}';
+    protected $key = 'redisun:{id}:string:{name}';
 
     protected $type = 'string';
 
