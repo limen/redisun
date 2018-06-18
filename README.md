@@ -1,4 +1,4 @@
-# CURD model for redis, unify api for all data types.
+# Make redis manipulations easy, unified commands for all data types.
 
 [![Build Status](https://travis-ci.org/limen/redisun.svg?branch=master)](https://travis-ci.org/limen/redisun)
 [![Packagist](https://img.shields.io/packagist/l/limen/redisun.svg?maxAge=2592000)](https://packagist.org/packages/limen/redisun)

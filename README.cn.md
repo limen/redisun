@@ -1,11 +1,7 @@
-# CURD model for redis in laravel style
+# 让redis操作更简单，为不同数据类型封装统一的命令
 
 [![Build Status](https://travis-ci.org/limen/redisun.svg?branch=master)](https://travis-ci.org/limen/redisun)
 [![Packagist](https://img.shields.io/packagist/l/limen/redisun.svg?maxAge=2592000)](https://packagist.org/packages/limen/redisun)
-
-让redis操作变得简单。
-
-提供了一套类似于关系型数据库的查询接口，并非尝试将redis变成关系型数据库。
 
 该库依赖[predis](https://github.com/nrk/predis "")。
 
