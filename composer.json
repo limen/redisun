@@ -1,12 +1,13 @@
 {
   "name": "limen/redisun",
-  "description": "CURD model for Redis in laravel style.",
+  "description": "Make redis manipulations easy. Unify commands for all data types.",
   "type": "library",
   "keywords": [
     "redis",
+    "lua",
+    "eval",
     "sql",
-    "orm",
-    "model"
+    "orm"
   ],
   "homepage": "https://github.com/limen/redisun",
   "authors": [
