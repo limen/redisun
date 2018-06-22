@@ -3,16 +3,13 @@
 [![Build Status](https://travis-ci.org/limen/redisun.svg?branch=master)](https://travis-ci.org/limen/redisun)
 [![Packagist](https://img.shields.io/packagist/l/limen/redisun.svg?maxAge=2592000)](https://packagist.org/packages/limen/redisun)
 
-Make Redis manipulations easy.
-
-This package is based on [predis](https://github.com/nrk/predis "")
 
 ## Features
 
-+ Unified commands for different data types.
-+ supports most of queries usually used in relational database such as MySql. 
-+ fluent query builder.
++ Unified commands for all data types: string, list, hash, set and zset.
++ support SQL like query
 + use "eval" to save time consumption on network.
++ "set" like commands all support to set new ttl or keep current ttl
 
 ## Unified commands
 

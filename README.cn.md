@@ -3,13 +3,29 @@
 [![Build Status](https://travis-ci.org/limen/redisun.svg?branch=master)](https://travis-ci.org/limen/redisun)
 [![Packagist](https://img.shields.io/packagist/l/limen/redisun.svg?maxAge=2592000)](https://packagist.org/packages/limen/redisun)
 
-该库依赖[predis](https://github.com/nrk/predis "")。
 
 ## 特性
 
-+ 支持类似SQL的查询方法，如where、where in等。
-+ 流式的查询构造器
++ 为不同的数据类型封装了统一的命令，支持常用的5种数据类型：string, hash, list, set, zset
++ 支持类似SQL的查询方法，如where、where in等
 + 使用eval降低在网络通信上的时间消耗
++ "set"类命令均支持修改key的ttl或保留当前ttl
+
+## 已封装的命令
++ create: 创建key
++ createNotExists: 当key不存在时创建
++ createExists: 当key存在时创建
++ insert: 类似create，支持披批量创建
++ insertNotExists: 批量创建，当所有key不存在时才创建
++ insertExists: 批量创建，当所有key存在时才创建
++ get: 批量获取key
++ getAndSet: 获取key并设置新值
++ find: 获取单个key
++ findBatch: 批量获取
++ update: 批量更新
++ destroy: 删除key
++ destroyBatch: 批量删除
++ delete: 批量删除
 
 ## 安装
 
@@ -53,7 +69,7 @@ $stringModel->where('id',1)->get();     // 返回 ['redisun:1:string:martin' => 
 
 #### _Key表征_
 
-每一个Model都有自己的key表征。Query builder依据key表征来构造待查询的key。例如
+每一个Model都有自己的key表征。查询时依据key表征来构造key。例如
  
 ```
 school:{schoolId}:class:{classId}:members
@@ -65,7 +81,7 @@ school:{schoolId}:class:{classId}:members
 $model->where('schoolId',1)->whereIn('classId',[1,2])->get();
 ```
 
-Query builder构造出的key如下。这也是将要向redis查询的key
+最终构造出的key如下。这也是将要向redis查询的key
 
 ```
 school:1:class:1:members
@@ -119,7 +135,7 @@ school:1:class:{classId}:members
 + zset: 数组
 
 
-## 方法
+## 命令手册
 
 ### create
 
