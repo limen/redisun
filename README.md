@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/limen/redisun.svg?branch=master)](https://travis-ci.org/limen/redisun)
 [![Packagist](https://img.shields.io/packagist/l/limen/redisun.svg?maxAge=2592000)](https://packagist.org/packages/limen/redisun)
 
+[中文](https://github.com/limen/redisun/blob/master/README.cn.md)
+[Wiki](https://github.com/limen/redisun/wiki)
 
 ## Features
 
