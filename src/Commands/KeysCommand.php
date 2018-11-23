@@ -6,11 +6,16 @@ class KeysCommand extends Command
     public function getScript()
     {
         $script = <<<LUA
-    local values = {}; 
+    local values={} 
     for i,v in ipairs(KEYS) do 
-        values[#values+1] = redis.pcall('keys',v); 
+        if string.find(v,'?')~=nil or string.find(v,'*')~=nil then
+            values[#values+1]=redis.pcall('keys',v) 
+        else if redis.pcall('exists',v)==1 then 
+            values[#values+1] = {v}
+        end
+        end
     end 
-    return values;
+    return values
 LUA;
         return $script;
     }

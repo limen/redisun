@@ -282,7 +282,7 @@ class ModelTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->where('name','maria')->ttl());
         $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->where('name','maria')->ttl());
 
-        sleep($ttl);
+        sleep($ttl + 1);
         $this->assertEquals([], $model->newQuery()->where('id',1)->where('name','maria')->get());
         $this->assertNull($model->newQuery()->where('id',1)->where('name','maria')->first());
 
@@ -328,7 +328,7 @@ class ModelTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->ttl());
         $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->ttl());
 
-        sleep($ttl);
+        sleep($ttl + 1);
         $this->assertEquals([], $model->newQuery()->where('id',1)->get());
         $this->assertEquals([], $model->find(1));
 
@@ -348,7 +348,7 @@ class ModelTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $model->newQuery()->where('id',1)->ttl());
         $this->assertLessThanOrEqual($ttl, $model->newQuery()->where('id',1)->ttl());
 
-        sleep($ttl);
+        sleep($ttl + 1);
         $this->assertEquals([], $model->newQuery()->where('id',1)->get());
 
         // ListModel
