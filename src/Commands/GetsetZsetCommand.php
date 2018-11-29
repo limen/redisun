@@ -5,7 +5,6 @@ class GetsetZsetCommand extends Command
 {
     public function getScript()
     {
-        $elementsPart = $this->joinArguments();
         $luaSetTtl = $this->luaSetTtl($this->getTtl());
         $setTtl = $luaSetTtl ? 1 : 0;
 
@@ -16,7 +15,11 @@ class GetsetZsetCommand extends Command
         local ttl = redis.pcall('ttl', v);
         values[#values+1] = redis.pcall('zrange', v, 0, -1); 
         redis.pcall('del',v);
-        redis.pcall('zadd', v, $elementsPart);
+        local j=1;
+        while j<#ARGV do
+            redis.pcall('zadd',v,ARGV[j],ARGV[j+1]);
+            j=j+2
+        end
         if setTtl == 1 then
             $luaSetTtl
         elseif ttl >= 0 then

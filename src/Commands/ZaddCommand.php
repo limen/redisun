@@ -5,7 +5,6 @@ class ZaddCommand extends Command
 {
     public function getScript()
     {
-        $elementsPart = $this->joinArguments();
         $luaSetTtl = $this->luaSetTtl($this->getTtl());
         $setTtl = $luaSetTtl ? 1 : 0;
         $checkScript = $this->existenceScript;
@@ -18,7 +17,12 @@ local setTtl = '$setTtl';
 for i,v in ipairs(KEYS) do
     local ttl = redis.pcall('ttl', v)
     $delScript
-    local rs1 = redis.pcall('zadd', v, $elementsPart);
+    local rs1
+    local j=1
+    while j<#ARGV do
+        rs1=redis.pcall('zadd',v,ARGV[j],ARGV[j+1]);
+        j=j+2
+    end
     if rs1 then
         if setTtl=='1' then
             $luaSetTtl

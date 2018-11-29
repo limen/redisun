@@ -14,7 +14,6 @@ class HmsetCommand extends Command
 {
     public function getScript()
     {
-        $argString = $this->joinArguments();
         $luaSetTtl = $this->luaSetTtl($this->getTtl());
         $setTtl = $luaSetTtl ? 1 : 0;
         $checkExist = $this->existenceScript;
@@ -27,7 +26,11 @@ local setTtl = '$setTtl';
 for i,v in ipairs(KEYS) do 
     local ttl = redis.pcall('ttl', v)
     $delScript
-    values[#values+1] = redis.pcall('hmset',v, $argString); 
+    local j=1
+    while j<#ARGV do
+        values[i]=redis.pcall('hset',v,ARGV[j],ARGV[j+1]); 
+        j=j+2
+    end
     if setTtl == '1' then
         $luaSetTtl
     elseif ttl > 0 then

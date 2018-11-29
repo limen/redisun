@@ -5,7 +5,6 @@ class GetsetListCommand extends Command
 {
     public function getScript()
     {
-        $elementsPart = $this->joinArguments();
         $luaSetTtl = $this->luaSetTtl($this->getTtl());
         $setTtl = $luaSetTtl ? 1 : 0;
 
@@ -16,7 +15,9 @@ class GetsetListCommand extends Command
         local ttl = redis.pcall('ttl', v);
         values[#values+1] = redis.pcall('lrange',v,0,-1); 
         redis.pcall('del',v);
-        redis.pcall('rpush',v,$elementsPart);
+        for j=1,#ARGV do
+            redis.pcall('rpush',v,ARGV[j]);
+        end
         if setTtl == 1 then
             $luaSetTtl
         elseif ttl >= 0 then
