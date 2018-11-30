@@ -21,12 +21,12 @@ class GetsetStringCommand extends Command
     local values = {}; 
     local setTtl = $setTtl;
     for i,v in ipairs(KEYS) do 
-        local ttl = redis.pcall('ttl', v);
-        values[#values+1] = redis.pcall('getset',v,ARGV[1]); 
+        local ttl = redis.call('ttl', v);
+        values[#values+1] = redis.call('getset',v,ARGV[1]); 
         if setTtl == 1 then
             $luaSetTtl
         elseif ttl >= 0 then
-            redis.pcall('expire',v,ttl)
+            redis.call('expire',v,ttl)
         end
     end 
     return {KEYS,values};

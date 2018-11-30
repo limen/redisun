@@ -17,7 +17,7 @@ class GetCommand extends Command
         $script = <<<LUA
     local values = {}; 
     for i,v in ipairs(KEYS) do 
-        values[#values+1] = redis.pcall('get',v); 
+        values[#values+1] = redis.call('get',v); 
     end 
     return {KEYS,values};
 LUA;

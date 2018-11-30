@@ -12,16 +12,16 @@ class GetsetListCommand extends Command
     local values = {}; 
     local setTtl = $setTtl;
     for i,v in ipairs(KEYS) do 
-        local ttl = redis.pcall('ttl', v);
-        values[#values+1] = redis.pcall('lrange',v,0,-1); 
-        redis.pcall('del',v);
+        local ttl = redis.call('ttl', v);
+        values[#values+1] = redis.call('lrange',v,0,-1); 
+        redis.call('del',v);
         for j=1,#ARGV do
-            redis.pcall('rpush',v,ARGV[j]);
+            redis.call('rpush',v,ARGV[j]);
         end
         if setTtl == 1 then
             $luaSetTtl
         elseif ttl >= 0 then
-            redis.pcall('expire',v,ttl)
+            redis.call('expire',v,ttl)
         end
     end 
     return {KEYS,values};

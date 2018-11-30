@@ -145,11 +145,11 @@ abstract class Command extends ScriptCommand
             $script = '';
         } elseif ($ttl == Model::TTL_PERSIST) {
             $script = <<<LUA
-redis.pcall('persist', v);
+redis.call('persist', v);
 LUA;
         } else {
             $script = <<<LUA
-redis.pcall('expire', v, $ttl);
+redis.call('expire', v, $ttl);
 LUA;
         }
 

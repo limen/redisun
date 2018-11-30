@@ -9,8 +9,8 @@ class KeysCommand extends Command
     local values={} 
     for i,v in ipairs(KEYS) do 
         if string.find(v,'?')~=nil or string.find(v,'*')~=nil then
-            values[#values+1]=redis.pcall('keys',v) 
-        else if redis.pcall('exists',v)==1 then 
+            values[#values+1]=redis.call('keys',v) 
+        else if redis.call('exists',v)==1 then 
             values[#values+1] = {v}
         end
         end

@@ -24,17 +24,17 @@ $checkExist
 local values = {}; 
 local setTtl = '$setTtl';
 for i,v in ipairs(KEYS) do 
-    local ttl = redis.pcall('ttl', v)
+    local ttl = redis.call('ttl', v)
     $delScript
     local j=1
     while j<#ARGV do
-        values[i]=redis.pcall('hset',v,ARGV[j],ARGV[j+1]); 
+        values[i]=redis.call('hset',v,ARGV[j],ARGV[j+1]); 
         j=j+2
     end
     if setTtl == '1' then
         $luaSetTtl
     elseif ttl > 0 then
-        redis.pcall('expire', v, ttl);
+        redis.call('expire', v, ttl);
     end
 end
 return {KEYS,values};

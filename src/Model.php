@@ -980,9 +980,18 @@ abstract class Model
     {
         $evalArgs = $command->getArguments();
         array_unshift($evalArgs, $command->getKeysCount());
-        array_unshift($evalArgs, $command->getScript());
 
-        $data = call_user_func_array([$this->redClient, 'eval'], $evalArgs);
+        try {
+            array_unshift($evalArgs, sha1($command->getScript()));
+            $data = call_user_func_array([$this->redClient, 'evalsha'], $evalArgs);
+        } catch (\Exception $e) {
+            if (strpos($e->getMessage(), 'NOSCRIPT') !== false) {
+                $evalArgs[0] = $command->getScript();
+                $data = call_user_func_array([$this->redClient, 'eval'], $evalArgs);
+            } else {
+                throw $e;
+            }
+        }
 
         $data = $command->parseResponse($data);
 

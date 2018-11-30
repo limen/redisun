@@ -23,7 +23,7 @@ trait Existence
     {
         $this->existenceScript = <<<LUA
 for i,v in ipairs(KEYS) do
-    local ex = redis.pcall('exists', v);
+    local ex = redis.call('exists', v);
     if ex==0 then
         return nil
     end
@@ -36,7 +36,7 @@ LUA;
     {
         $this->existenceScript = <<<LUA
 for i,v in ipairs(KEYS) do
-    local ex = redis.pcall('exists', v);
+    local ex = redis.call('exists', v);
     if ex==1 then
         return nil
     end
@@ -48,7 +48,7 @@ LUA;
     public function pleaseDeleteIfExists()
     {
         $this->deleteScript = <<<LUA
-redis.pcall('del', v);
+redis.call('del', v);
 LUA;
         return $this;
     }

@@ -8,7 +8,7 @@ class ZrangeCommand extends Command
         return <<<LUA
 local values = {}; 
 for i,v in ipairs(KEYS) do 
-    values[#values+1] = redis.pcall('zrange', v, 0, -1); 
+    values[#values+1] = redis.call('zrange', v, 0, -1); 
 end 
 return {KEYS,values};
 LUA;
