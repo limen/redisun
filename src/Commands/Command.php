@@ -96,7 +96,7 @@ abstract class Command extends ScriptCommand
      * @return mixed
      * @throws Exception
      */
-    function parseResponse($data)
+    public function parseResponse($data)
     {
         if (empty($data)) {
             return [];
@@ -139,6 +139,13 @@ abstract class Command extends ScriptCommand
         return uniqid('__limen__redisun__' . time() . '__' . rand(1, 1000) . '__');
     }
 
+    /**
+     * TODO: Pass ttl as an argument to reduce script memory usage on the server side.
+     *
+     * @param $ttl
+     *
+     * @return string
+     */
     protected function luaSetTtl($ttl)
     {
         if (!$ttl) {

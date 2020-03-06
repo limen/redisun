@@ -12,6 +12,8 @@ namespace Limen\Redisun;
 
 use Exception;
 use Limen\Redisun\Commands\Command;
+use Limen\Redisun\Commands\CountCommand;
+use Limen\Redisun\Commands\DeleteCommand;
 use Limen\Redisun\Commands\Factory;
 use Limen\Redisun\Commands\FactoryInterface;
 use Predis\Client as RedisClient;
@@ -249,11 +251,15 @@ abstract class Model
     }
 
     /**
+     * @see CountCommand
      * @return int
      */
     public function count()
     {
-        return count($this->prepareKeys());
+        $keys = $this->prepareFuzzyKeys();
+        $command = $this->commandFactory->getCommand('count', $keys);
+
+        return $this->executeCommand($command);
     }
 
     /**
@@ -504,17 +510,19 @@ abstract class Model
 
     /**
      * Delete items
+     *
+     * @see DeleteCommand
      * @return bool|int
      */
     public function delete()
     {
-        $queryKeys = $this->prepareKeys(false);
-
-        if (count($queryKeys) > 0) {
-            return $this->redClient->del($queryKeys);
+        $queryKeys = $this->prepareFuzzyKeys();
+        if (empty($queryKeys)) {
+            return false;
         }
 
-        return false;
+        $command = $this->commandFactory->getCommand('delete', $queryKeys);
+        return $this->executeCommand($command);
     }
 
     /**
@@ -703,13 +711,7 @@ abstract class Model
      */
     protected function prepareKeys($forGet = true)
     {
-        $queryKeys = $this->queryBuilder->getQueryKeys();
-
-        // Caution! Would get all items.
-        if (!$queryKeys) {
-            $queryKeys = [$this->key];
-        }
-
+        $queryKeys = $this->prepareFuzzyKeys();
         $existKeys = $this->getExistKeys($queryKeys);
 
         if ($forGet) {
@@ -725,6 +727,21 @@ abstract class Model
         }
 
         return $existKeys;
+    }
+
+    /**
+     * @return array
+     */
+    protected function prepareFuzzyKeys()
+    {
+        $queryKeys = $this->queryBuilder->getQueryKeys();
+
+        // Caution! Would get all items.
+        if (!$queryKeys) {
+            $queryKeys = [$this->key];
+        }
+
+        return $this->markUnboundFields($queryKeys);
     }
 
     /**
@@ -957,12 +974,10 @@ abstract class Model
      */
     protected function getExistKeys($queryKeys)
     {
-        $keys = $this->markUnboundFields($queryKeys);
-
         $exist = [];
 
-        if ($keys) {
-            $command = $this->commandFactory->getCommand('keys', $keys);
+        if ($queryKeys) {
+            $command = $this->commandFactory->getCommand('keys', $queryKeys);
 
             $exist = $this->executeCommand($command);
 

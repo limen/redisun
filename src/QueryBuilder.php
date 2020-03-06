@@ -137,7 +137,7 @@ class QueryBuilder
     }
 
     /**
-     * Refresh query builder
+     * Refresh query builder to reuse it
      *
      * @return $this
      */
